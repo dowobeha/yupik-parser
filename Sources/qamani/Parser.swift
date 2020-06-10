@@ -5,12 +5,10 @@ import Foundation
 
 struct Parser: ParsableCommand {
     
-    @Option(default: "/Users/lanes/work/summer/yupik/yupik-foma-v2/l2s.fomabin",
-            help:    "Finite-state transducer in foma binary file format")
+    @Option(help:    "Finite-state transducer in foma binary file format")
     var fst: String
     
-    @Option(default: "/Users/lanes/work/summer/yupik/qamani/jacobson/Ch03.txt",
-            help:    "Text file containing one sentence per line")
+    @Option(help:    "Text file containing one sentence per line")
     var sentences: String
     
     func run() {
@@ -26,16 +24,18 @@ struct Parser: ParsableCommand {
             let sentences: [Sentence] = lines.map(Sentence.init)
             for sentence in sentences {
                 print(sentence, to: &stderr)
-                for word in sentence.tokens {
-                    if let analyses = fst.applyUp(word) {
-                        print("\t\(word)")
-                        for analysis in analyses {
+                let lattice = sentence.parse(using: fst)
+                for analyses in lattice {
+                    if let values: [Analysis] = analyses.values {
+                        print("\t\(analyses.surfaceForm)")
+                        for analysis in values {
                             print("\t\t\(analysis)")
                         }
                     } else {
-                        print("\t\(word)\tANALYSIS FAILED")
+                        print("\t\(analyses.surfaceForm)\tANALYSIS FAILED")
                     }
                 }
+                
             }
         }
     }
@@ -54,15 +54,19 @@ struct Sentence: Sequence {
     }
 }
 
-struct Morpheme {
-
+protocol Morpheme {
+    var root: Bool { get }
+    var derivational: Bool { get }
+    var inflectional: Bool { get }
 }
 
-struct Analysis: Sequence {
+struct Analysis: Sequence, CustomStringConvertible {
 
     public let morphemes: [String]
+    public let description: String
 
-    init(_ analysis: String, delimiter: String.Element = "^") {
+    init(_ analysis: String, delimiter: String.Element) {
+        self.description = analysis
         self.morphemes = analysis.split(separator: delimiter).map{String($0)}
     }
     
@@ -71,31 +75,53 @@ struct Analysis: Sequence {
     }
 }
 
-struct Analyses: Sequence {
+struct Analyses {
 
     public let surfaceForm: String
-    public let analyses: [Analysis]
+    public let values: [Analysis]?
     
     public init(_ analyses: [Analysis], of surfaceForm: String) {
         self.surfaceForm = surfaceForm
-        self.analyses = analyses
+        self.values = analyses
     }
     
-    func makeIterator() -> IndexingIterator<[Analysis]> {
+    private init(failedSurfaceForm: String) {
+        self.surfaceForm = failedSurfaceForm
+        self.values = nil
+    }
+    
+    public static func failure(parsingSurfaceForm word: String) -> Analyses {
+        return Analyses(failedSurfaceForm: word)
+    }
+
+}
+
+extension Sentence {
+    
+    func parse(using fst: FST, withMorphemeDelimiter morphemeDelimiter: String.Element = "^") -> AnalysisLattice {
+        let result: [Analyses] = self.tokens.map { (word: String) -> Analyses in
+            if let strings: [String] = fst.applyUp(word) {
+                let analyses: [Analysis] = strings.map { Analysis($0, delimiter: morphemeDelimiter) }
+                return Analyses(analyses, of: word)
+            } else {
+                return Analyses.failure(parsingSurfaceForm: word)
+            }
+        }
+        return AnalysisLattice(result)
+    }
+    
+}
+
+
+struct AnalysisLattice: Sequence {
+    
+    let analyses: [Analyses]
+    
+    init(_ analyses: [Analyses]) {
+        self.analyses = analyses
+    }
+ 
+    func makeIterator() -> IndexingIterator<[Analyses]> {
         return self.analyses.makeIterator()
     }
 }
-
-/*
-struct AnalysisLattice {
-    
-    let analyses: [[String]]
-    
-    init(sentence: Sentence, using fst: FST) {
-        self.analyses
-        fst.applyUp(word)
-    }
-    
-    
-}
-*/

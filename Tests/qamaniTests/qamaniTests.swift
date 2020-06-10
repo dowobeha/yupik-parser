@@ -2,6 +2,7 @@ import XCTest
 import class Foundation.Bundle
 
 final class qamaniTests: XCTestCase {
+    /*
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
@@ -28,6 +29,7 @@ final class qamaniTests: XCTestCase {
 
         XCTAssertEqual(output, "Hello, qikmigh(N)^[Abs.Sg]!\n")
     }
+ 
 
     /// Returns path to the built products directory.
     var productsDirectory: URL {
@@ -44,4 +46,5 @@ final class qamaniTests: XCTestCase {
     static var allTests = [
         ("testExample", testExample),
     ]
+ */
 }
