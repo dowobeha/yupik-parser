@@ -7,7 +7,7 @@ let package = Package(
     name: "qamani",
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        Package.Dependency.package(url: "https://github.com/dowobeha/Foma.git", from: "0.2.0"),
+        Package.Dependency.package(url: "https://github.com/dowobeha/Foma.git", from: "0.3.1"),
         Package.Dependency.package(url: "https://github.com/apple/swift-argument-parser.git", from: "0.0.6"),
         Package.Dependency.package(url: "https://github.com/hectr/swift-stream-reader.git", from: "0.3.0")
     ],
