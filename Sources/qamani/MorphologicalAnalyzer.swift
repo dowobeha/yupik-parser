@@ -3,7 +3,7 @@ import Foma
 import StreamReader
 import Foundation
 
-struct Parser: ParsableCommand {
+struct MorphologicalAnalyzer: ParsableCommand {
     
     @Option(help:    "Finite-state transducer (lexical underlying form to surface form) in foma binary file format")
     var l2s: String
@@ -35,7 +35,7 @@ struct Parser: ParsableCommand {
             return
         }
         
-        guard let parsedSentences: [AnalyzedSentence] = Parser.parseFile(self.sentences, using: l2s, and: l2i) else {
+        guard let parsedSentences: [AnalyzedSentence] = MorphologicalAnalyzer.analyzeFile(self.sentences, using: l2s, and: l2i) else {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
@@ -44,22 +44,21 @@ struct Parser: ParsableCommand {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.analyses.count})
             for word in sentence {
-                let forms: String = word.analyses.map{ $0.underlyingForm }.joined(separator: "\t")
-                var actual: String = "FAILURE"
-                if let a: String = word.actualSurfaceForm {
-                    actual = a
-                }
+                
+                let analyses: String = word.analyses.map{ $0.underlyingForm }.joined(separator: "\t")
+                
+                let actualSurfaceForm: String = word.actualSurfaceForm==nil ? "FAILURE" : word.actualSurfaceForm!
                 
                 switch self.mode {
                 case Mode.all:
-                    print("\(word.analyses.count)\t\(actual)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(forms)")
+                    print("\(word.analyses.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                 case Mode.unique:
                     if word.analyses.count == 1 {
-                        print("\(word.analyses.count)\t\(actual)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(forms)")
+                        print("\(word.analyses.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                     }
                 case Mode.failure:
                     if word.analyses.isEmpty {
-                        print("\(word.analyses.count)\t\(actual)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(forms)")
+                        print("\(word.analyses.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                     }
                 }
             }
@@ -68,7 +67,7 @@ struct Parser: ParsableCommand {
     }
     
     /// Read sentences from the provided file and morphologically analyze every word in every sentence in the file.
-    static func parseFile(_ filename: String, using l2s: FST, and l2i: FST) -> [AnalyzedSentence]? {
+    static func analyzeFile(_ filename: String, using l2s: FST, and l2i: FST) -> [AnalyzedSentence]? {
         if let lines = StreamReader(path: filename) {
             var document = filename
             if let x = filename.lastIndex(of: "/") {

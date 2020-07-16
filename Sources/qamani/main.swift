@@ -1,1 +1,1 @@
-Parser.main()
+MorphologicalAnalyzer.main()
