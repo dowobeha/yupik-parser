@@ -6,3 +6,6 @@ xcuserdata/
 Package.resolved
 .swiftpm/
 jacobson/
+*.tsv
+*.fomabin
+*.txt
