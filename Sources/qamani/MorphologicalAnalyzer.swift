@@ -3,6 +3,7 @@ import Foma
 import StreamReader
 import Foundation
 
+/// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct MorphologicalAnalyzer: ParsableCommand {
     
     @Option(help:    "Finite-state transducer (lexical underlying form to surface form) in foma binary file format")
@@ -23,6 +24,7 @@ struct MorphologicalAnalyzer: ParsableCommand {
                      """)
     var mode: Mode = Mode.all
     
+    /// Run morphological analyzer using provided command line arguments.
     func run() {
 
         guard let l2s = FST(fromBinary: self.l2s) else {
@@ -45,6 +47,7 @@ struct MorphologicalAnalyzer: ParsableCommand {
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.analyses.count})
             for word in sentence {
                 
+                // Join all morphological analyses together with tabs
                 let analyses: String = word.analyses.map{ $0.underlyingForm }.joined(separator: "\t")
                 
                 let actualSurfaceForm: String = word.actualSurfaceForm==nil ? "FAILURE" : word.actualSurfaceForm!
@@ -66,7 +69,16 @@ struct MorphologicalAnalyzer: ParsableCommand {
     
     }
     
-    /// Read sentences from the provided file and morphologically analyze every word in every sentence in the file.
+    /**
+     Read sentences from the provided file and morphologically analyze every word in every sentence in the file.
+     
+      - Parameters:
+         - filename: absolute path to text file containing one sentence per line
+         - using: Finite state transducer where the upper side represents the underlying lexical forms of words and the lower side represents the surface forms
+         - and: Finite state transducer where the upper side represents the underlying lexical forms of words and the lower side represents the intermediate forms
+     
+     - Returns: A list of morphologically analyzed sentences.
+     */
     static func analyzeFile(_ filename: String, using l2s: FST, and l2i: FST) -> [AnalyzedSentence]? {
         if let lines = StreamReader(path: filename) {
             var document = filename
