@@ -23,7 +23,7 @@ OPTIONS:
 * --l2s <l2s>             Finite-state transducer (lexical underlying form to surface form) in foma binary file format 
 * --l2is <l2is>           Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format 
 * --sentences <sentences> Text file containing one sentence per line 
-* --mode <mode>           Mode: all | unique | failure 
+* --mode <mode>           all | unique | failure 
 * -h, --help              Show help information.
 
 The arguments to the **l2s** and **l2is** flags must be absolute paths, not relative paths.
