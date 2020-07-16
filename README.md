@@ -2,7 +2,7 @@
 
 > **qamani** *қамани* /qɑ.'mɑː.ni/ — (demonstrative adverb, localis case, obscured) in there <br> (*Badten et al, 2008*)
 
-This code wraps a (foma)[https://fomafst.github.io/] morphological analyzer to provide morphological analyses for every word in a corpus. 
+This code wraps a [foma](https://fomafst.github.io/) morphological analyzer to provide morphological analyses for every word in a corpus. 
 The corpus must be a text file containing one sentence per line. It should work even if you haven’t removed punctuation from words.
 
 For each word, the code prints a line that provides:
