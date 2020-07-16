@@ -108,97 +108,13 @@ struct Parser: ParsableCommand {
     }
 }
 
-struct Morpheme {
-    let underlyingLexicalForm: String
-    let surfaceForm: String
-}
 
-struct MorphologicalAnalysis {
-    
-    //let morphemes: [Morpheme]
-    let underlyingForm: String
-    let actualSurfaceForm: String
-    let possibleSurfaceForms: [String]
-    
-    init(_ underlyingForm: String, withSurfaceForm surfaceForm: String, ofPossibleSurfaceForms possibleForms: [String]) {
-//        self.morphemes = morphemes
-        self.underlyingForm = underlyingForm
-        self.actualSurfaceForm = surfaceForm
-        self.possibleSurfaceForms = possibleForms
-    }
-    
-    public static func parseWord(_ surfaceForm: String, using l2s: FST, and l2i: FST) -> (String?, [MorphologicalAnalysis]) {
-        var results = [MorphologicalAnalysis]()
-        
-        if let applyUpResult = l2s.applyUp(surfaceForm) {
-            let parsedSurfaceForm = applyUpResult.input
-            let upperForms = applyUpResult.outputs
-            for analysis in upperForms {
-                //let underlyingMorphemes = analysis.split(separator: delimiter).map{String($0)}
-                if let applyDownResult = l2i.applyDown(analysis) {
-                    results.append(MorphologicalAnalysis(analysis, withSurfaceForm: parsedSurfaceForm, ofPossibleSurfaceForms: applyDownResult.outputs))
-                } else {
-                    // We have an analysis, but l2i can't reproduce the surface form
-                    results.append(MorphologicalAnalysis(analysis, withSurfaceForm: parsedSurfaceForm, ofPossibleSurfaceForms: []))
-                }
-            }
-            
-            return (parsedSurfaceForm, results)
-        } else {
-            return (nil, results)
-        }
-    }
-}
 
-struct Word {
-    let wordNumber: Int
-    let sentenceNumber: Int
-    let document: String
+
+
+
     
-    let originalSurfaceForm: String
-    let actualSurfaceForm: String?
-    
-    let analyses: [MorphologicalAnalysis]
-    
-    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using l2s: FST, and l2i: FST) {
-        self.originalSurfaceForm = word
-        self.wordNumber = atPosition
-        self.sentenceNumber = inSentence
-        self.document = inDocument
-        let tuple = MorphologicalAnalysis.parseWord(word, using: l2s, and: l2i)
-        self.actualSurfaceForm = tuple.0
-        self.analyses = tuple.1
-    }
-    
-}
-    
-struct Sentence: Sequence, CustomStringConvertible {
-    
-    let tokens: [String]
-    let document: String
-    let lineNumber: Int
-    
-    let words: [Word]
-    
-    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using l2s: FST, and l2i: FST) {
-        self.tokens = tokens.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
-        self.words = self.tokens.enumerated().map{ enumeratedToken -> Word in
-            let token = enumeratedToken.element
-            let position = enumeratedToken.offset+1
-            return Word(parseToken: token, atPosition: position, inSentence: lineNumber, inDocument: documentID, using: l2s, and: l2i)
-        }
-        self.lineNumber = lineNumber
-        self.document = documentID
-    }
-    
-    var description: String {
-        return "Sentence \(self.lineNumber) of \(self.document)\t\(self.tokens.joined(separator: " "))"
-    }
-    
-    func makeIterator() -> IndexingIterator<[Word]> {
-        return self.words.makeIterator()
-    }
-}
+
 /*
 protocol Morpheme {
     var root: Bool { get }
