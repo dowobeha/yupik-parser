@@ -31,7 +31,7 @@ struct AnalyzedWord {
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
         self.document = inDocument
-        let tuple = MorphologicalAnalysis.parseWord(word, using: l2s, and: l2i)
+        let tuple = MorphologicalAnalysis.analyzeWord(word, using: l2s, and: l2i)
         self.actualSurfaceForm = tuple.0
         self.analyses = tuple.1
     }

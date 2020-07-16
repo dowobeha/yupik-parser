@@ -31,7 +31,7 @@ struct MorphologicalAnalysis {
             
      - Returns: A tuple where the first element is either surface form that was parsed (if parsing was successful) or nil (if parsing failed), and where the second element is the list of morphological analyses licensed by the provided finite-state transducers for that parsed surface form.
     */
-    public static func parseWord(_ surfaceForm: String, using l2s: FST, and l2i: FST) -> (String?, [MorphologicalAnalysis]) {
+    public static func analyzeWord(_ surfaceForm: String, using l2s: FST, and l2i: FST) -> (String?, [MorphologicalAnalysis]) {
         var results = [MorphologicalAnalysis]()
         
         if let applyUpResult = l2s.applyUp(surfaceForm) {
