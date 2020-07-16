@@ -1,7 +1,7 @@
 import Foma
 
 /// A morphologically analyzed word in a corpus.
-struct Word {
+struct AnalyzedWord {
     
     /// Name of the document where this word is located.
     let document: String
