@@ -1,3 +1,5 @@
+import Foma
+
 /// A morphologically analyzed word in a corpus.
 struct Word {
     

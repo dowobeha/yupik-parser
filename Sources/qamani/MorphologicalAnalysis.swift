@@ -1,3 +1,5 @@
+import Foma
+
 /// Morphological analysis of a single word
 struct MorphologicalAnalysis {
     

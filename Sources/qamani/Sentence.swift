@@ -1,3 +1,5 @@
+import Foma
+import Foundation
 
 /// Morphologically analyzed sentence.
 struct Sentence: Sequence, CustomStringConvertible {
