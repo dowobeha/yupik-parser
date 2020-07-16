@@ -5,6 +5,8 @@
 
 ## How to compile
 
+Ensure that you have Swift 5.2 or later installed.
+
 - Option 1: On macOS, double-click on Package.swift, and the whole project should open in XCode
 
 - Option 2: At the terminal, run `swift build`. This will compile the code and put it in a `.build` directory, probably in `.build/debug/qamani`
