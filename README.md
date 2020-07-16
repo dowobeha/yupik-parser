@@ -17,7 +17,7 @@ For each word, the code prints a line that provides:
 
 Ensure that you have [Swift 5.2](https://www.swift.org/download) or later installed.
 
-- Option 1: On macOS, double-click on Package.swift, and the whole project should open in XCode
+- Option 1: On macOS with XCode 11.4 or later, double-click on Package.swift, and the whole project should open in XCode
 
 - Option 2: At the terminal, run `swift build`. This will compile the code and put it in a `.build` directory, probably in `.build/debug/qamani`
 
