@@ -15,7 +15,7 @@ For each word, the code prints a line that provides:
 
 ## How to compile
 
-Ensure that you have Swift 5.2 or later installed.
+Ensure that you have [Swift 5.2](https://www.swift.org) or later installed.
 
 - Option 1: On macOS, double-click on Package.swift, and the whole project should open in XCode
 
