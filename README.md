@@ -28,14 +28,14 @@ OPTIONS:
 
 The arguments to the **l2s** and **l2is** flags must be absolute paths, not relative paths.
 
-### Modes
+## Modes
 
-#### all
+### all
 Print count and value of all analyzes for every word in the provided text.
 
-#### unique
+### unique
 Print count and value of analyses for words with exactly 1 analysis in the provided text.
 
-#### failure
+### failure
 Print words in the provided text that failed to analyze.
 
