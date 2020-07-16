@@ -28,17 +28,17 @@ struct MorphologicalAnalyzer: ParsableCommand {
     func run() {
 
         guard let l2s = FST(fromBinary: self.l2s) else {
-            print("Unable to open \(self.l2s)", to: &stderr)
+            print("Unable to open \(self.l2s)", to: &FileHandle.standardError)
             return
         }
 
         guard let l2i = FST(fromBinary: self.l2is) else {
-            print("Unable to open \(self.l2is)", to: &stderr)
+            print("Unable to open \(self.l2is)", to: &FileHandle.standardError)
             return
         }
         
         guard let parsedSentences: [AnalyzedSentence] = MorphologicalAnalyzer.analyzeFile(self.sentences, using: l2s, and: l2i) else {
-            print("Unable to read \(self.sentences)", to: &stderr)
+            print("Unable to read \(self.sentences)", to: &FileHandle.standardError)
             return
         }
 

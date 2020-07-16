@@ -6,7 +6,7 @@
 
 import Foundation
 
-var stderr = FileHandle.standardError
+// var stderr = FileHandle.standardError
 
 extension FileHandle : TextOutputStream {
   public func write(_ string: String) {
