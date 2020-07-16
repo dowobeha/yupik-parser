@@ -32,8 +32,8 @@ Ensure that you have [Swift 5.2](https://www.swift.org/download) or later instal
 `qamani --l2s <l2s> --l2is <l2is> --sentences <sentences> --mode <mode>`
 
 OPTIONS:
-* --l2s <l2s>             Finite-state transducer (lexical underlying form to surface form) in foma binary file format 
-* --l2is <l2is>           Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format 
+* --l2s <l2s>             Finite-state transducer (segmented lexical underlying form to surface form) in foma binary file format 
+* --l2is <l2is>           Finite-state transducer (segmented lexical underlying form to segmented surface form) in foma binary file format 
 * --sentences <sentences> Text file containing one sentence per line 
 * --mode <mode>           all | unique | failure 
 * -h, --help              Show help information.
