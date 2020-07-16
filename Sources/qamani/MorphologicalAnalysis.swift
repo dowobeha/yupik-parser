@@ -38,7 +38,7 @@ struct MorphologicalAnalysis {
             let parsedSurfaceForm = applyUpResult.input
             let upperForms = applyUpResult.outputs
             for analysis in upperForms {
-                //let underlyingMorphemes = analysis.split(separator: delimiter).map{String($0)}
+                
                 if let applyDownResult = l2i.applyDown(analysis) {
                     results.append(MorphologicalAnalysis(analysis, withSurfaceForm: parsedSurfaceForm, ofPossibleSurfaceForms: applyDownResult.outputs))
                 } else {
