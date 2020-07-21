@@ -26,12 +26,12 @@ struct AnalyzedWord {
     let analyses: [MorphologicalAnalysis]
     
     /// Performs morphological analysis of a word in a document, storing the results.
-    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using l2s: FST, and l2i: FST) {
+    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: FSTs) {
         self.originalSurfaceForm = word
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
         self.document = inDocument
-        let tuple = MorphologicalAnalysis.analyzeWord(word, using: l2s, and: l2i)
+        let tuple = machines.analyzeWord(word)
         self.actualSurfaceForm = tuple.0
         self.analyses = tuple.1
     }

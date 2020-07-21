@@ -17,12 +17,12 @@ struct AnalyzedSentence: Sequence, CustomStringConvertible {
     let words: [AnalyzedWord]
     
     /// Performs morphological analysis of each token in the sentence, storing the results.
-    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using l2s: FST, and l2i: FST) {
+    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: FSTs) {
         self.tokens = tokens.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
         self.words = self.tokens.enumerated().map{ enumeratedToken -> AnalyzedWord in
             let token = enumeratedToken.element
             let position = enumeratedToken.offset+1
-            return AnalyzedWord(parseToken: token, atPosition: position, inSentence: lineNumber, inDocument: documentID, using: l2s, and: l2i)
+            return AnalyzedWord(parseToken: token, atPosition: position, inSentence: lineNumber, inDocument: documentID, using: machines)
         }
         self.lineNumber = lineNumber
         self.document = documentID

@@ -11,6 +11,18 @@ struct MorphologicalAnalyzer: ParsableCommand {
 
     @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
     var l2is: String
+
+    @Option(help:    "Finite-state transducer (guessed underlying form to surface form) in foma binary file format")
+    var g2s: String
+
+    @Option(help:    "Finite-state transducer (guessed underlying form to segmented surface form) in foma binary file format")
+    var g2is: String
+
+    @Option(help:    "Finite-state transducer (guessed foreign underlying form to surface form) in foma binary file format")
+    var f2s: String
+
+    @Option(help:    "Finite-state transducer (guessed foreign underlying form to segmented surface form) in foma binary file format")
+    var f2is: String
     
     @Option(help:    "Text file containing one sentence per line")
     var sentences: String
@@ -32,12 +44,36 @@ struct MorphologicalAnalyzer: ParsableCommand {
             return
         }
 
-        guard let l2i = FST(fromBinary: self.l2is) else {
+        guard let l2is = FST(fromBinary: self.l2is) else {
             print("Unable to open \(self.l2is)", to: &stderr)
             return
         }
+
+        guard let g2s = FST(fromBinary: self.g2s) else {
+            print("Unable to open \(self.g2s)", to: &stderr)
+            return
+        }
+
+        guard let g2is = FST(fromBinary: self.g2is) else {
+            print("Unable to open \(self.g2is)", to: &stderr)
+            return
+        }
         
-        guard let parsedSentences: [AnalyzedSentence] = MorphologicalAnalyzer.analyzeFile(self.sentences, using: l2s, and: l2i) else {
+        guard let f2s = FST(fromBinary: self.f2s) else {
+            print("Unable to open \(self.f2s)", to: &stderr)
+            return
+        }
+
+        guard let f2is = FST(fromBinary: self.f2is) else {
+            print("Unable to open \(self.f2is)", to: &stderr)
+            return
+        }
+        
+        let machines = FSTs(machines: [FSTs.Pair(l2s: l2s, l2is: l2is),
+                                       FSTs.Pair(l2s: g2s, l2is: g2is),
+                                       FSTs.Pair(l2s: f2s, l2is: f2is)])
+        
+        guard let parsedSentences: [AnalyzedSentence] = MorphologicalAnalyzer.analyzeFile(self.sentences, using: machines) else {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
@@ -79,14 +115,14 @@ struct MorphologicalAnalyzer: ParsableCommand {
      
      - Returns: A list of morphologically analyzed sentences.
      */
-    static func analyzeFile(_ filename: String, using l2s: FST, and l2i: FST) -> [AnalyzedSentence]? {
+    static func analyzeFile(_ filename: String, using machines: FSTs) -> [AnalyzedSentence]? {
         if let lines = StreamReader(path: filename) {
             var document = filename
             if let x = filename.lastIndex(of: "/") {
                 document = String(filename[filename.index(after: x)...])
             }
             let nonBlankLines = lines.filter{!($0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty)}
-            return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: l2s, and: l2i) }
+            return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
         } else {
             return nil
         }
