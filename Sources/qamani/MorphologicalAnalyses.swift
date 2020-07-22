@@ -3,9 +3,7 @@ import Foma
 /// Morphological analyses of a single word
 struct MorphologicalAnalyses {
     
-    /// Orthographic representation of a word that was successfully morphologically parsed.
-    let actualSurfaceForm: String
-    
+    /// Surface representation that was successfully analyzed
     let parsedSurfaceForm: String
     
     /// List of morphological analyses of a word
@@ -17,11 +15,10 @@ struct MorphologicalAnalyses {
     /**
      Stores a morphological analysis.
      */
-    init(_ analyses: [MorphologicalAnalysis], of surfaceForm: String, parsedAs parsedSurfaceForm: String, by: String) {
+    init(_ analyses: [MorphologicalAnalysis], of surfaceForm: String, parsedBy: String) {
         self.analyses = analyses
-        self.actualSurfaceForm = surfaceForm
-        self.parsedSurfaceForm = parsedSurfaceForm
-        self.parsedBy = by
+        self.parsedSurfaceForm = surfaceForm
+        self.parsedBy = parsedBy
     }
 
 }

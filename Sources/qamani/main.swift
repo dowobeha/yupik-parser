@@ -66,18 +66,18 @@ struct CommandLineProgram: ParsableCommand {
                 // Join all morphological analyses together with tabs
                 let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.underlyingForm }.joined(separator: "\t")
                 
-                let actualSurfaceForm: String = word.analyses==nil ? "FAILURE" : word.analyses!.actualSurfaceForm
+                let parsedSurfaceForm: String = word.analyses==nil ? "FAILURE" : word.analyses!.parsedSurfaceForm
                 
                 switch self.mode {
                 case Mode.all:
-                    print("\(word.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
+                    print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                 case Mode.unique:
                     if word.count == 1 {
-                        print("\(word.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
+                        print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                     }
                 case Mode.failure:
                     if word.analyses == nil {
-                        print("\(word.count)\t\(actualSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
+                        print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
                     }
                 }
             }
