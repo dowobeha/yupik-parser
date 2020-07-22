@@ -1,8 +1,8 @@
 import Foma
 
-struct MorphologicalAnalyzers {
+public struct MorphologicalAnalyzers {
 
-    let machines: [MorphologicalAnalyzer]
+    private let machines: [MorphologicalAnalyzer]
 
     public init(_ machines: [MorphologicalAnalyzer]) {
         self.machines = machines

@@ -1,10 +1,10 @@
 import Foma
 
-struct MorphologicalAnalyzer {
+public struct MorphologicalAnalyzer {
 
-    let name: String
-    let l2s: FST
-    let l2is: FST
+    public let name: String
+    private let l2s: FST
+    private let l2is: FST
 
     public init(name: String, l2s: FST, l2is: FST) {
         self.name = name
@@ -22,7 +22,7 @@ struct MorphologicalAnalyzer {
             
      - Returns: A list of analyses, or nil if the analysis failed
     */
-    func analyzeWord(_ surfaceForm: String) -> MorphologicalAnalyses? {
+    public func analyzeWord(_ surfaceForm: String) -> MorphologicalAnalyses? {
         
         var analyses = [MorphologicalAnalysis]()
 

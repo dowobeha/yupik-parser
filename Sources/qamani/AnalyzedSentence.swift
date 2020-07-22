@@ -2,22 +2,22 @@ import Foma
 import Foundation
 
 /// Morphologically analyzed sentence.
-struct AnalyzedSentence: Sequence, CustomStringConvertible {
+public struct AnalyzedSentence: Sequence, CustomStringConvertible {
 
     /// Name of the document where this sentence is located.
-    let document: String
+    public let document: String
 
     /// Index of the sentence within the document where this word is located.
-    let lineNumber: Int
+    public let lineNumber: Int
 
     /// Orthographic surface forms of the tokens in the sentence.
-    let tokens: [String]
+    public let tokens: [String]
     
     /// Morphologically analyzed representations of the words in the sentence.
-    let words: [AnalyzedWord]
+    public let words: [AnalyzedWord]
     
     /// Performs morphological analysis of each token in the sentence, storing the results.
-    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: MorphologicalAnalyzers) {
+    public init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: MorphologicalAnalyzers) {
         self.tokens = tokens.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
         self.words = self.tokens.enumerated().map{ enumeratedToken -> AnalyzedWord in
             let token = enumeratedToken.element
@@ -29,12 +29,12 @@ struct AnalyzedSentence: Sequence, CustomStringConvertible {
     }
     
     /// String representation of this sentence.
-    var description: String {
+    public var description: String {
         return "Sentence \(self.lineNumber) of \(self.document)\t\(self.tokens.joined(separator: " "))"
     }
     
     /// Returns an iterator over the morphologically analyzed words in the sentence.
-    func makeIterator() -> IndexingIterator<[AnalyzedWord]> {
+    public func makeIterator() -> IndexingIterator<[AnalyzedWord]> {
         return self.words.makeIterator()
     }
 }

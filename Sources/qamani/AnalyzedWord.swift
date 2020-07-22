@@ -1,19 +1,19 @@
 import Foma
 
 /// A morphologically analyzed word in a corpus.
-struct AnalyzedWord {
+public struct AnalyzedWord {
     
     /// Name of the document where this word is located.
-    let document: String
+    public let document: String
     
     /// Index of the sentence within the document where this word is located.
-    let sentenceNumber: Int
+    public let sentenceNumber: Int
     
     /// Index of the word within the sentence where this word is located.
-    let wordNumber: Int
+    public let wordNumber: Int
     
     /// Orthographic form of the word as it appears in the document.
-    let originalSurfaceForm: String
+    public let originalSurfaceForm: String
     
     /**
      If nil, indicates that the word was not successfully analyzed; otherwise, represents the orthographic variant of the word that was successfully analyzed.
@@ -23,12 +23,12 @@ struct AnalyzedWord {
     //let actualSurfaceForm: String?
     
     /// List of morphological analyses of the word
-    let analyses: MorphologicalAnalyses?
+    public let analyses: MorphologicalAnalyses?
     
-    let count: Int
+    public let count: Int
     
     /// Performs morphological analysis of a word in a document, storing the results.
-    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: MorphologicalAnalyzers) {
+    public init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: MorphologicalAnalyzers) {
         self.originalSurfaceForm = word
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
