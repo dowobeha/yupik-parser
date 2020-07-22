@@ -23,7 +23,11 @@ let package = Package(
         Package.Dependency.package(
             name: "StreamReader",
             url: "https://github.com/hectr/swift-stream-reader.git",
-            from: "0.3.0")
+            from: "0.3.0"),
+        Package.Dependency.package(
+            name: "Progress",
+            url: "https://github.com/jkandzi/Progress.swift",
+            from: "0.4.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -39,7 +43,10 @@ let package = Package(
                     package: "swift-argument-parser"),
                 Target.Dependency.product(
                     name: "StreamReader",
-                    package: "StreamReader")
+                    package: "StreamReader"),
+                Target.Dependency.product(
+                    name: "Progress",
+                    package: "Progress")
             ]),
         Target.testTarget(
             name: "qamaniTests",

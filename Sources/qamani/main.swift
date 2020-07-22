@@ -2,6 +2,7 @@ import ArgumentParser
 import Foma
 import StreamReader
 import Foundation
+import Progress
 
 /// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct CommandLineProgram: ParsableCommand {
@@ -61,7 +62,7 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
 
-        for sentence in parsedSentences {
+        for sentence in Progress(parsedSentences) {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
             for word in sentence {
