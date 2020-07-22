@@ -106,7 +106,7 @@ struct CommandLineProgram: ParsableCommand {
                 document = String(filename[filename.index(after: x)...])
             }
             let nonBlankLines = lines.filter{!($0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty)}
-            return Progress(nonBlankLines).enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
+            return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
         } else {
             return nil
         }
