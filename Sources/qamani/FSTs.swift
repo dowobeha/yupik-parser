@@ -1,3 +1,4 @@
+/*
 import Foma
 
 struct FSTs {
@@ -65,3 +66,4 @@ struct FSTs {
     }
     
 }
+*/

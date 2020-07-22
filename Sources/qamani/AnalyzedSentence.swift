@@ -17,7 +17,7 @@ struct AnalyzedSentence: Sequence, CustomStringConvertible {
     let words: [AnalyzedWord]
     
     /// Performs morphological analysis of each token in the sentence, storing the results.
-    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: FSTs) {
+    init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: MorphologicalAnalyzers) {
         self.tokens = tokens.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
         self.words = self.tokens.enumerated().map{ enumeratedToken -> AnalyzedWord in
             let token = enumeratedToken.element

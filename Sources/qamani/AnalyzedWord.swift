@@ -20,23 +20,24 @@ struct AnalyzedWord {
      
      For example, if the morphological analyzer is case-sensitive, the original surface form could be in all-caps, but the actual surface form is in all lowercase.
     */
-    let actualSurfaceForm: String?
+    //let actualSurfaceForm: String?
     
     /// List of morphological analyses of the word
-    let analyses: [MorphologicalAnalysis]
+    let analyses: MorphologicalAnalyses?
     
-    let analyzedBy: String?
+    let count: Int
     
     /// Performs morphological analysis of a word in a document, storing the results.
-    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: FSTs) {
+    init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: MorphologicalAnalyzers) {
         self.originalSurfaceForm = word
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
         self.document = inDocument
-        let result = machines.analyzeWord(word)
-        self.actualSurfaceForm = result.parsedSurfaceForm
-        self.analyses = result.analyses
-        self.analyzedBy = result.providedBy
+        self.analyses = machines.analyzeWord(word)
+        self.count = (self.analyses==nil ? 0 : self.analyses!.analyses.count)
+        //self.actualSurfaceForm = result.parsedSurfaceForm
+        //self.analyses = result.analyses
+        //self.analyzedBy = result.providedBy
     }
     
 }
