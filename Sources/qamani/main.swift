@@ -62,7 +62,7 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
 
-        for sentence in Progress(parsedSentences) {
+        for sentence in parsedSentences {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
             for word in sentence {
@@ -106,7 +106,7 @@ struct CommandLineProgram: ParsableCommand {
                 document = String(filename[filename.index(after: x)...])
             }
             let nonBlankLines = lines.filter{!($0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty)}
-            return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
+            return Progress(nonBlankLines).enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
         } else {
             return nil
         }
