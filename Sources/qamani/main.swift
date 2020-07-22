@@ -18,6 +18,9 @@ struct CommandLineProgram: ParsableCommand {
     @Option(help:    "Text file containing one sentence per line")
     var sentences: String
 
+    @Option(help:    "Character that delimits morpheme boundaries")
+    var delimiter: String = "^"
+    
     enum Mode: String, ExpressibleByArgument { case all, unique, failure }
     @Option(help:    """
                      Mode: all     (Print count and value of all analyzes for every word)
@@ -49,7 +52,7 @@ struct CommandLineProgram: ParsableCommand {
                 return
             }
 
-            analyzers.append(MorphologicalAnalyzer(name: self.name[i], l2s: l2s, l2is: l2is))
+            analyzers.append(MorphologicalAnalyzer(name: self.name[i], l2s: l2s, l2is: l2is, delimiter: self.delimiter))
             
         }
         
@@ -64,7 +67,7 @@ struct CommandLineProgram: ParsableCommand {
             for word in sentence {
                 
                 // Join all morphological analyses together with tabs
-                let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.underlyingForm }.joined(separator: "\t")
+                let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ "\($0.underlyingForm) \($0.intermediateForm ?? "FAILURE")" }.joined(separator: "\t")
                 
                 let parsedSurfaceForm: String = word.analyses==nil ? "FAILURE" : word.analyses!.parsedSurfaceForm
                 

@@ -1,15 +1,20 @@
 import Foma
+import Foundation
 
 public struct MorphologicalAnalyzer {
 
     public let name: String
     private let l2s: FST
     private let l2is: FST
+    private let delimiter: String
+    private let nullMorpheme: String
 
-    public init(name: String, l2s: FST, l2is: FST) {
+    public init(name: String, l2s: FST, l2is: FST, delimiter: String, nullMorpheme: String = "{0}") {
         self.name = name
         self.l2s = l2s
         self.l2is = l2is
+        self.delimiter = delimiter
+        self.nullMorpheme = nullMorpheme
     }
     
     /**
@@ -30,14 +35,16 @@ public struct MorphologicalAnalyzer {
             let parsedSurfaceForm = applyUpResult.input
             let upperForms = applyUpResult.outputs
             for analysis in upperForms {
-                
-                if let applyDownResult = self.l2is.applyDown(analysis) {
+                 
+                if let applyDownResult = self.l2is.applyDown(analysis),
+                    let matchingIntermediteForm = applyDownResult.outputs.filter({$0.replacingOccurrences(of: self.delimiter, with: "").replacingOccurrences(of: self.nullMorpheme, with: "") == parsedSurfaceForm}).first {
+                                        
                     analyses.append(MorphologicalAnalysis(analysis,
-                                                          withPossibleSurfaceForms: applyDownResult.outputs))
+                                                          withIntermediateForm: matchingIntermediteForm))
                 } else {
                     // We have an analysis, but l2i can't reproduce the surface form
                     analyses.append(MorphologicalAnalysis(analysis,
-                                                          withPossibleSurfaceForms: []))
+                                                          withIntermediateForm: nil))
                 }
             }
             
