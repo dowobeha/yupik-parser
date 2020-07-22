@@ -25,15 +25,18 @@ struct AnalyzedWord {
     /// List of morphological analyses of the word
     let analyses: [MorphologicalAnalysis]
     
+    let analyzedBy: String?
+    
     /// Performs morphological analysis of a word in a document, storing the results.
     init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: FSTs) {
         self.originalSurfaceForm = word
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
         self.document = inDocument
-        let tuple = machines.analyzeWord(word)
-        self.actualSurfaceForm = tuple.0
-        self.analyses = tuple.1
+        let result = machines.analyzeWord(word)
+        self.actualSurfaceForm = result.parsedSurfaceForm
+        self.analyses = result.analyses
+        self.analyzedBy = result.providedBy
     }
     
 }
