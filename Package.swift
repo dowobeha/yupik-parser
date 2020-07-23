@@ -7,8 +7,8 @@ let package = Package(
     name: "qamani",
     products: [
         Product.executable(
-            name: "itemquulta",
-            targets: ["itemquulta"]),
+            name: "itemquulteki",
+            targets: ["itemquulteki"]),
         Product.executable(
             name: "peghqiilta",
             targets: ["peghqiilta"])
@@ -36,7 +36,7 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         Target.target(
-            name: "itemquulta",
+            name: "itemquulteki",
             dependencies: [
                 Target.Dependency.target(
                     name: "Qamani"),

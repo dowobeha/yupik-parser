@@ -2,7 +2,9 @@
 
 > **qamani** *қамани* /qɑ.'mɑː.ni/ — (demonstrative adverb, localis case, obscured) in there <br> (*Badten et al, 2008*)
 
-> **peghqiilta** *пҳқӣльта* /pəχ.'qiːɬ.tɑ/ — (intransitive verb, optative mood, 3rd person plural) let's train <br> (*Badten et al, 2008*)
+> **peghqiilta** *пҳқӣльта* /pəχ.'qiːɬ.tɑ/ — (intransitive verb, optative mood, 1st person plural subject) let's train <br> (*Badten et al, 2008*)
+
+> **itemquulteki** *итымқӯльтыки* /i.'təm.'quːɬ.tə.ki/ — (transitive verb, optative mood, 1st person plural subject, 3rd person plural object) let's take them apart <br> (*Badten et al, 2008*)
 
 Given a user-provided morphological analyzer implemented in [foma](https://fomafst.github.io/), **qamani** provides morphological analyses for every word in a corpus. 
 The corpus must be a text file containing one sentence per line. It should work even if you haven’t removed punctuation from words.
