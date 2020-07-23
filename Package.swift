@@ -7,8 +7,8 @@ let package = Package(
     name: "qamani",
     products: [
         Product.executable(
-            name: "qamani",
-            targets: ["qamani"]),
+            name: "itemquulta",
+            targets: ["itemquulta"]),
         Product.executable(
             name: "peghqiilta",
             targets: ["peghqiilta"])
@@ -27,10 +27,6 @@ let package = Package(
             name: "StreamReader",
             url: "https://github.com/hectr/swift-stream-reader.git",
             from: "0.3.0"),
-//        Package.Dependency.package(
-//            name: "Progress",
-//            url: "https://github.com/dowobeha/Progress.swift",
-//            from: "0.4.4"),
         Package.Dependency.package(
             name: "Threading",
             url: "https://github.com/Miraion/Threading.git",
@@ -40,39 +36,32 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         Target.target(
-        name: "peghqiilta",
-        dependencies: [
-            Target.Dependency.product(
-                name: "Foma",
-                package: "Foma"),
-            Target.Dependency.product(
-                name: "ArgumentParser",
-                package: "swift-argument-parser"),
-            Target.Dependency.product(
-                name: "StreamReader",
-                package: "StreamReader"),
-//            Target.Dependency.product(
-//                name: "Progress",
-//                package: "Progress"),
-            Target.Dependency.product(
-                name: "Threading",
-                package: "Threading")
+            name: "itemquulta",
+            dependencies: [
+                Target.Dependency.target(
+                    name: "Qamani"),
+                Target.Dependency.product(
+                    name: "ArgumentParser",
+                    package: "swift-argument-parser"),
         ]),
         Target.target(
-            name: "qamani",
+            name: "peghqiilta",
+            dependencies: [
+                Target.Dependency.target(
+                    name: "Qamani"),
+                Target.Dependency.product(
+                    name: "ArgumentParser",
+                    package: "swift-argument-parser"),
+        ]),
+        Target.target(
+            name: "Qamani",
             dependencies: [
                 Target.Dependency.product(
                     name: "Foma",
                     package: "Foma"),
                 Target.Dependency.product(
-                    name: "ArgumentParser",
-                    package: "swift-argument-parser"),
-                Target.Dependency.product(
                     name: "StreamReader",
                     package: "StreamReader"),
-//                Target.Dependency.product(
-//                    name: "Progress",
-//                    package: "Progress"),
                 Target.Dependency.product(
                     name: "Threading",
                     package: "Threading")
@@ -80,7 +69,7 @@ let package = Package(
         Target.testTarget(
             name: "qamaniTests",
             dependencies: [
-                Target.Dependency.target(name: "qamani")
+                Target.Dependency.target(name: "Qamani")
             ]),
     ]
 )

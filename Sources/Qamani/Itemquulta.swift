@@ -4,7 +4,7 @@ import Foundation
 import StreamReader
 import Threading
 
-struct Qamani {
+public struct Itemquulta {
 
     let analyzers: MorphologicalAnalyzers
     
@@ -47,7 +47,7 @@ struct Qamani {
      
      - Returns: A list of morphologically analyzed sentences.
      */
-    func analyzeFile(_ filename: String) -> [AnalyzedSentence]? {
+    public func analyzeFile(_ filename: String) -> Qamani? {
         if let lines = StreamReader(path: filename) {
             var document = filename
             if let x = filename.lastIndex(of: "/") {
@@ -80,7 +80,7 @@ struct Qamani {
             
             group.wait()
             
-            return Array(result).sorted(by: {$0.lineNumber < $1.lineNumber})
+            return Qamani(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}))
 
         } else {
             return nil

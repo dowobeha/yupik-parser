@@ -1,113 +1,54 @@
-/*
+import ArgumentParser
 import Foundation
-import Dispatch
+import Qamani
 
-var str = "Hello, playground"
-/*
-DispatchQueue.global(qos: .background).async {
-    for i in 0...5 {
-        print("Nakaa \(i)")
-    }
-}
+/// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
+struct CommandLineProgram: ParsableCommand {
+    
+    @Option(help:    "Descriptive name to use for a given pair of FSTs (l2s & l2is)")
+    var name: [String] = []
+    
+    @Option(help:    "Finite-state transducer (lexical underlying form to surface form) in foma binary file format")
+    var l2s: [String] = []
 
-DispatchQueue.global(qos: .userInteractive).async {
-    for i in 0...5 {
-        print("Aa-a \(i)")
-    }
-}
+    @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
+    var l2is: [String] = []
 
-print(str)
-*/
-/*
-var workItem: DispatchWorkItem?
-workItem = DispatchWorkItem {
-    for i in 1..<6 {
-        guard let item = workItem, !item.isCancelled else {
-            print("cancelled")
-            break
+    @Option(help:    "Text file containing one sentence per line")
+    var sentences: String
+
+    @Option(help:    "Character that delimits morpheme boundaries")
+    var delimiter: String = "^"
+    
+    enum Mode: String, ExpressibleByArgument { case all, unique, failure }
+    @Option(help:    """
+                     Mode: all     (Print count and value of all analyzes for every word)
+                           unique  (Print count and value of analyses for words with exactly 1 analysis)
+                           failure (Print words that failed to analyze)
+
+                     """)
+    var mode: Mode = Mode.all
+    
+    /// Run morphological analyzer using provided command line arguments.
+    func run() {
+
+        guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
+            return
         }
-        sleep(1)
-        print(String(i))
+        
+        var stderr = FileHandle.standardError
+        
+        guard let parsedSentences = itemquulta.analyzeFile(self.sentences) else {
+            print("Unable to read \(self.sentences)", to: &stderr)
+            return
+        }
+        
+        let learner = Peghqiilta(analyzedCorpus: parsedSentences)
+        
+        learner.train()
+    
     }
 }
 
-workItem?.notify(queue: .main) {
-    print("done")
-}
 
-DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
-    workItem?.cancel()
-}
-DispatchQueue.main.async(execute: workItem!)
-*/
-
-/*
-func load(delay: UInt32, completion: () -> Void) {
-    sleep(delay)
-    completion()
-}
-
-let group = DispatchGroup()
-
-group.enter()
-load(delay: 0) {
-    print("1")
-    group.leave()
-}
-
-group.enter()
-load(delay: 0) {
-    print("2")
-    group.leave()
-}
-
-group.enter()
-load(delay: 0) {
-    print("3")
-    group.leave()
-}
-
-group.notify(queue: .main) {
-    print("done")
-}
-
-
-group.wait()
-*/
-/*
-let semaphore = DispatchSemaphore(value: 0)
-let queue = DispatchQueue.global()
-let n = 9
-for i in 0..<n {
-    queue.async {
-        print("run \(i)")
-        sleep(3)
-        semaphore.signal()
-    }
-}
-print("wait")
-for i in 0..<n {
-    semaphore.wait()
-    print("completed \(i)")
-}
-print("done")
-*/
-
-
-let queue = DispatchQueue.global()
-let group = DispatchGroup()
-let n = 100
-for i in 0..<n {
-    queue.async(group: group) {
-        print("\(i): Running async task...")
-        sleep(3)
-        print("\(i): Async task completed")
-    }
-}
-group.wait()
-print("done")
-
-print(str)
-
-*/
-print("hello")
+CommandLineProgram.main()

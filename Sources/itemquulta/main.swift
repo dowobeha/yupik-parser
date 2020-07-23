@@ -1,4 +1,6 @@
 import ArgumentParser
+import Foundation
+import Qamani
 
 /// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct CommandLineProgram: ParsableCommand {
@@ -30,11 +32,13 @@ struct CommandLineProgram: ParsableCommand {
     /// Run morphological analyzer using provided command line arguments.
     func run() {
 
-        guard let qamani = Qamani(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
+        guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
             return
         }
         
-        guard let parsedSentences = qamani.analyzeFile(self.sentences) else {
+        var stderr = FileHandle.standardError
+        
+        guard let parsedSentences: Qamani = itemquulta.analyzeFile(self.sentences) else {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
