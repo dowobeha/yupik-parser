@@ -16,14 +16,10 @@ public struct AnalyzedSentence: Sequence, CustomStringConvertible {
     /// Morphologically analyzed representations of the words in the sentence.
     public let words: [AnalyzedWord]
     
-    /// Performs morphological analysis of each token in the sentence, storing the results.
-    public init(_ tokens: String, lineNumber: Int, inDocument documentID: String, using machines: MorphologicalAnalyzers) {
-        self.tokens = tokens.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
-        self.words = self.tokens.enumerated().map{ enumeratedToken -> AnalyzedWord in
-            let token = enumeratedToken.element
-            let position = enumeratedToken.offset+1
-            return AnalyzedWord(parseToken: token, atPosition: position, inSentence: lineNumber, inDocument: documentID, using: machines)
-        }
+    /// Stores the morphological analysis of each token in a sentence
+    public init(words: [AnalyzedWord], withLineNumber lineNumber: Int, inDocument documentID: String) {
+        self.tokens = words.map{$0.originalSurfaceForm}
+        self.words = words
         self.lineNumber = lineNumber
         self.document = documentID
     }
@@ -37,21 +33,5 @@ public struct AnalyzedSentence: Sequence, CustomStringConvertible {
     public func makeIterator() -> IndexingIterator<[AnalyzedWord]> {
         return self.words.makeIterator()
     }
-/*
-    public static func < (lhs: AnalyzedSentence, rhs: AnalyzedSentence) -> Bool {
-        if lhs.document < rhs.document && lhs.lineNumber < rhs.lineNumber {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    public static func == (lhs: AnalyzedSentence, rhs: AnalyzedSentence) -> Bool {
-        if lhs.document == rhs.document && lhs.lineNumber == rhs.lineNumber {
-            return true
-        } else {
-            return false
-        }
-    }
- */
+
 }

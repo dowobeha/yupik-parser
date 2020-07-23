@@ -15,29 +15,19 @@ public struct AnalyzedWord {
     /// Orthographic form of the word as it appears in the document.
     public let originalSurfaceForm: String
     
-    /**
-     If nil, indicates that the word was not successfully analyzed; otherwise, represents the orthographic variant of the word that was successfully analyzed.
-     
-     For example, if the morphological analyzer is case-sensitive, the original surface form could be in all-caps, but the actual surface form is in all lowercase.
-    */
-    //let actualSurfaceForm: String?
-    
     /// List of morphological analyses of the word
     public let analyses: MorphologicalAnalyses?
     
     public let count: Int
     
     /// Performs morphological analysis of a word in a document, storing the results.
-    public init(parseToken word: String, atPosition: Int, inSentence: Int, inDocument: String, using machines: MorphologicalAnalyzers) {
+    public init(word: String, atPosition: Int, inSentence: Int, inDocument: String, withAnalyses analyses: MorphologicalAnalyses?) {
         self.originalSurfaceForm = word
         self.wordNumber = atPosition
         self.sentenceNumber = inSentence
         self.document = inDocument
-        self.analyses = machines.analyzeWord(word)
+        self.analyses = analyses
         self.count = (self.analyses==nil ? 0 : self.analyses!.analyses.count)
-        //self.actualSurfaceForm = result.parsedSurfaceForm
-        //self.analyses = result.analyses
-        //self.analyzedBy = result.providedBy
     }
     
 }
