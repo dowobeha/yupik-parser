@@ -2,7 +2,7 @@ import Foma
 import Foundation
 
 /// Morphologically analyzed sentence.
-public struct AnalyzedSentence: Sequence, CustomStringConvertible, Comparable {
+public struct AnalyzedSentence: Sequence, CustomStringConvertible {
 
     /// Name of the document where this sentence is located.
     public let document: String
@@ -37,7 +37,7 @@ public struct AnalyzedSentence: Sequence, CustomStringConvertible, Comparable {
     public func makeIterator() -> IndexingIterator<[AnalyzedWord]> {
         return self.words.makeIterator()
     }
-
+/*
     public static func < (lhs: AnalyzedSentence, rhs: AnalyzedSentence) -> Bool {
         if lhs.document < rhs.document && lhs.lineNumber < rhs.lineNumber {
             return true
@@ -53,4 +53,5 @@ public struct AnalyzedSentence: Sequence, CustomStringConvertible, Comparable {
             return false
         }
     }
+ */
 }

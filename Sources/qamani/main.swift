@@ -62,8 +62,8 @@ struct CommandLineProgram: ParsableCommand {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
-
-        for sentence in parsedSentences.sorted() {
+        
+        for sentence in parsedSentences {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
             for word in sentence {
@@ -131,6 +131,11 @@ struct CommandLineProgram: ParsableCommand {
             }
             
             group.wait()
+            
+            //let sorted = result.sorted()
+            
+            
+            
             return result
             //return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
         } else {
