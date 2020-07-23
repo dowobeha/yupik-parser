@@ -1,3 +1,5 @@
+/*
+import Foundation
 import Dispatch
 
 var str = "Hello, playground"
@@ -107,3 +109,5 @@ print("done")
 
 print(str)
 
+*/
+print("hello")
