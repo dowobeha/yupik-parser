@@ -2,7 +2,8 @@ import ArgumentParser
 import Foma
 import StreamReader
 import Foundation
-import Progress
+import Dispatch
+import Threading
 
 /// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct CommandLineProgram: ParsableCommand {
@@ -57,12 +58,12 @@ struct CommandLineProgram: ParsableCommand {
             
         }
         
-        guard let parsedSentences: [AnalyzedSentence] = CommandLineProgram.analyzeFile(self.sentences, using: MorphologicalAnalyzers(analyzers)) else {
+        guard let parsedSentences = CommandLineProgram.analyzeFile(self.sentences, using: MorphologicalAnalyzers(analyzers)) else {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
 
-        for sentence in parsedSentences {
+        for sentence in parsedSentences.sorted() {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
             for word in sentence {
@@ -99,14 +100,39 @@ struct CommandLineProgram: ParsableCommand {
      
      - Returns: A list of morphologically analyzed sentences.
      */
-    static func analyzeFile(_ filename: String, using machines: MorphologicalAnalyzers) -> [AnalyzedSentence]? {
+    static func analyzeFile(_ filename: String, using machines: MorphologicalAnalyzers) -> ThreadedArray<AnalyzedSentence>? {
         if let lines = StreamReader(path: filename) {
             var document = filename
             if let x = filename.lastIndex(of: "/") {
                 document = String(filename[filename.index(after: x)...])
             }
             let nonBlankLines = lines.filter{!($0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty)}
-            return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
+            
+            let result = ThreadedArray<AnalyzedSentence>()
+            
+            var progressBar = ProgressBar(count: nonBlankLines.count)
+            let progressSemaphore = DispatchSemaphore(value: 0)
+            
+            let queue = DispatchQueue.global()
+            let group = DispatchGroup()
+            
+            for (offset, line) in nonBlankLines.enumerated() {
+                queue.async(group: group) {
+                    let sentence = AnalyzedSentence.init(line, lineNumber: offset+1, inDocument: document, using: machines)
+                    result.append(sentence)
+                    //print(sentence)
+                    progressSemaphore.signal()
+                }
+            }
+            
+            for _ in 0..<nonBlankLines.count {
+                progressSemaphore.wait()
+                progressBar.next()
+            }
+            
+            group.wait()
+            return result
+            //return nonBlankLines.enumerated().map{ (tuple) -> AnalyzedSentence in return AnalyzedSentence.init(tuple.element, lineNumber: tuple.offset+1, inDocument: document, using: machines) }
         } else {
             return nil
         }
@@ -115,3 +141,23 @@ struct CommandLineProgram: ParsableCommand {
 
 
 CommandLineProgram.main()
+
+/*
+ 
+ let queue = DispatchQueue.global()
+ let group = DispatchGroup()
+ let n = 100
+ for i in 0..<n {
+     queue.async(group: group) {
+         print("\(i): Running async task...")
+         sleep(3)
+         print("\(i): Async task completed")
+     }
+ }
+ group.wait()
+ print("done")
+
+ print(str)
+ 
+ 
+ */
