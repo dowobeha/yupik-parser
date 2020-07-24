@@ -17,7 +17,7 @@ struct CommandLineProgram: ParsableCommand {
     @Option(help:    "Text file containing one sentence per line")
     var sentences: String
 
-    @Option(help:    "Character that delimits morpheme boundaries")
+    @Option(help:    "Character that delimits morpheme boundaries in the segmented lexical underlying forms and in the segmented surface forms")
     var delimiter: String = "^"
     
     enum Mode: String, ExpressibleByArgument { case all, unique, failure }
