@@ -9,3 +9,4 @@ jacobson/
 *.tsv
 *.fomabin
 *.txt
+results/
