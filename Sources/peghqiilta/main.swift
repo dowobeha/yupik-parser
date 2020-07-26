@@ -15,6 +15,9 @@ struct CommandLineProgram: ParsableCommand {
     @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
     var l2is: [String] = []
 
+    @Option(help:     "Tab-separated file with format \"logprob\tword\"")
+    var wordLogProbs: String
+    
     @Option(help:    "Text file containing one sentence per line")
     var sentences: String
 
@@ -36,7 +39,12 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
         
-        let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2)
+        guard let wordProbs = WordLM(from: self.wordLogProbs) else {
+            print("Unable to read \(self.wordLogProbs)", to: &stderr)
+            return
+        }
+        
+        let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2, wordLM: wordProbs)
         
         learner.train()
     

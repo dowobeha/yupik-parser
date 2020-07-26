@@ -6,6 +6,9 @@ public struct MorphologicalAnalyses {
     /// Surface representation that was successfully analyzed
     public let parsedSurfaceForm: String
     
+    /// Surface form before any changes (lowercasing, etc)
+    public let originalSurfaceForm: String
+    
     /// List of morphological analyses of a word
     public let analyses: [MorphologicalAnalysis]
     
@@ -15,9 +18,10 @@ public struct MorphologicalAnalyses {
     /**
      Stores a morphological analysis.
      */
-    public init(_ analyses: [MorphologicalAnalysis], of surfaceForm: String, parsedBy: String) {
+    public init(_ analyses: [MorphologicalAnalysis], of surfaceForm: String, originally: String, parsedBy: String) {
         self.analyses = analyses
         self.parsedSurfaceForm = surfaceForm
+        self.originalSurfaceForm = originally
         self.parsedBy = parsedBy
     }
 

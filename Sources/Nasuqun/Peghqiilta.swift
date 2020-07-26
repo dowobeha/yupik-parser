@@ -6,14 +6,13 @@ public struct Peghqiilta {
     let analyzedCorpus: Qamani
     let analyses: [MorphologicalAnalyses]
     let orderOfMorphLM: NgramOrder
+    let wordLM: WordLM
     
-    public let startOfWord = "<w>"
-    public let endOfWord = "</w>"
-    
-    public init(analyzedCorpus: Qamani, orderOfMorphLM: Int) {
+    public init(analyzedCorpus: Qamani, orderOfMorphLM: Int, wordLM: WordLM) {
         self.analyzedCorpus = analyzedCorpus
         self.analyses = self.analyzedCorpus.flatMap({$0.words}).compactMap({$0.analyses})
         self.orderOfMorphLM = orderOfMorphLM
+        self.wordLM = wordLM
     }
     
     public func train() {
@@ -21,8 +20,10 @@ public struct Peghqiilta {
         let morphLM = self.estimateModel(from: morphCounts)
         for analyses in self.analyses {
             for analysis in analyses.analyses {
-                let prob = morphLM(analysis.underlyingForm, addTags: true)
-                print("\(analyses.parsedSurfaceForm)\t\(prob)\t\(analysis.underlyingForm)")
+                let morphLMProb = morphLM(analysis.underlyingForm, addTags: true)
+                let wordLMProb = self.wordLM(analyses.originalSurfaceForm)
+                let newMuProb = morphLMProb / wordLMProb
+                print("\(analyses.parsedSurfaceForm)\t\(newMuProb)\t\(wordLMProb)\t\(morphLMProb)\t\(analysis.underlyingForm)")
             }
         }
     }

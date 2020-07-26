@@ -50,7 +50,7 @@ public struct MorphologicalAnalyzer {
                 }
             }
             
-            return MorphologicalAnalyses(analyses, of: parsedSurfaceForm, parsedBy: self.name)
+            return MorphologicalAnalyses(analyses, of: parsedSurfaceForm, originally: surfaceForm, parsedBy: self.name)
 
         } else {
 
