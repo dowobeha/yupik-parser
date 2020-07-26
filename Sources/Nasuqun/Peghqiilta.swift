@@ -1,8 +1,9 @@
+import Foundation
 import NgramLM
 import Qamani
 
 public struct Peghqiilta {
-    
+      
     let analyzedCorpus: Qamani
     let analyses: [MorphologicalAnalyses]
     let orderOfMorphLM: NgramOrder
@@ -16,8 +17,14 @@ public struct Peghqiilta {
     }
     
     public func train() {
+        var stderr = FileHandle.standardError
+        print("Collecting counts...", to: &stderr)
         let morphCounts = self.collectCounts(using: NaivePosterior(self.analyses), ngramLength: self.orderOfMorphLM)
+        
+        print("Estimating model...", to: &stderr)
         let morphLM = self.estimateModel(from: morphCounts)
+        
+        print("Processing analyses...", to: &stderr)
         for analyses in self.analyses {
             for analysis in analyses.analyses {
                 let morphLMProb = morphLM(analysis.underlyingForm, addTags: true)
