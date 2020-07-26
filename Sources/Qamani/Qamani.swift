@@ -6,10 +6,12 @@ import Threading
 
 public struct Qamani: Sequence {
 
-    let analyzedSentences: [AnalyzedSentence]
+    public let analyzedSentences: [AnalyzedSentence]
+    public let morphemeDelimiter: String
     
-    public init(analyzedSentences: [AnalyzedSentence]) {
+    public init(analyzedSentences: [AnalyzedSentence], morphemeDelimiter: String) {
         self.analyzedSentences = analyzedSentences
+        self.morphemeDelimiter = morphemeDelimiter
     }
 
     /// Returns an iterator over the morphologically analyzed words in the sentence.

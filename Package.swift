@@ -31,6 +31,11 @@ let package = Package(
             name: "Threading",
             url: "https://github.com/Miraion/Threading.git",
             from: "1.0.0"),
+        Package.Dependency.package(
+            name: "NgramLM",
+            url: "https://github.com/dowobeha/NgramLM.git",
+            from: "0.1.0"
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -45,8 +50,28 @@ let package = Package(
                     package: "swift-argument-parser"),
         ]),
         Target.target(
+            name: "Nasuqun",
+            dependencies: [
+                Target.Dependency.target(
+                    name: "Qamani"),
+                Target.Dependency.product(
+                    name: "Foma",
+                    package: "Foma"),
+                Target.Dependency.product(
+                    name: "StreamReader",
+                    package: "StreamReader"),
+                Target.Dependency.product(
+                    name: "Threading",
+                    package: "Threading"),
+                Target.Dependency.product(
+                    name: "NgramLM",
+                    package: "NgramLM")
+        ]),
+        Target.target(
             name: "peghqiilta",
             dependencies: [
+                Target.Dependency.target(
+                    name: "Nasuqun"),
                 Target.Dependency.target(
                     name: "Qamani"),
                 Target.Dependency.product(

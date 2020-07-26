@@ -40,11 +40,13 @@ public struct MorphologicalAnalyzer {
                     let matchingIntermediteForm = applyDownResult.outputs.filter({$0.replacingOccurrences(of: self.delimiter, with: "").replacingOccurrences(of: self.nullMorpheme, with: "") == parsedSurfaceForm}).first {
                                         
                     analyses.append(MorphologicalAnalysis(analysis,
-                                                          withIntermediateForm: matchingIntermediteForm))
+                                                          withIntermediateForm: matchingIntermediteForm,
+                                                          delimiter: self.delimiter))
                 } else {
                     // We have an analysis, but l2i can't reproduce the surface form
                     analyses.append(MorphologicalAnalysis(analysis,
-                                                          withIntermediateForm: nil))
+                                                          withIntermediateForm: nil,
+                                                          delimiter: self.delimiter))
                 }
             }
             

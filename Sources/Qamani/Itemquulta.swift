@@ -7,6 +7,7 @@ import Threading
 public struct Itemquulta {
 
     let analyzers: MorphologicalAnalyzers
+    let delimiter: String
     
     public init?(name: [String], l2s: [String], l2is: [String], delimiter: String) {
         
@@ -34,6 +35,7 @@ public struct Itemquulta {
         }
               
         self.analyzers = MorphologicalAnalyzers(analyzers)
+        self.delimiter = delimiter
         
     }
     
@@ -80,7 +82,7 @@ public struct Itemquulta {
             
             group.wait()
             
-            return Qamani(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}))
+            return Qamani(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}), morphemeDelimiter: self.delimiter)
 
         } else {
             return nil

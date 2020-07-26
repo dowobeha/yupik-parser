@@ -21,4 +21,8 @@ public struct MorphologicalAnalyses {
         self.parsedBy = parsedBy
     }
 
+    public var count: Int {
+        return self.analyses.count
+    }
+    
 }

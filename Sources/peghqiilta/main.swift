@@ -1,6 +1,7 @@
 import ArgumentParser
 import Foundation
 import Qamani
+import Nasuqun
 
 /// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct CommandLineProgram: ParsableCommand {
@@ -19,24 +20,16 @@ struct CommandLineProgram: ParsableCommand {
 
     @Option(help:    "Character that delimits morpheme boundaries")
     var delimiter: String = "^"
-    
-    enum Mode: String, ExpressibleByArgument { case all, unique, failure }
-    @Option(help:    """
-                     Mode: all     (Print count and value of all analyzes for every word)
-                           unique  (Print count and value of analyses for words with exactly 1 analysis)
-                           failure (Print words that failed to analyze)
 
-                     """)
-    var mode: Mode = Mode.all
     
     /// Run morphological analyzer using provided command line arguments.
     func run() {
 
+        var stderr = FileHandle.standardError
+        
         guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
             return
         }
-        
-        var stderr = FileHandle.standardError
         
         guard let parsedSentences = itemquulta.analyzeFile(self.sentences) else {
             print("Unable to read \(self.sentences)", to: &stderr)
