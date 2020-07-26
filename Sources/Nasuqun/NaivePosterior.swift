@@ -1,6 +1,6 @@
 import Qamani
 
-public struct NaivePosterior : Conditional {
+public struct NaivePosterior : Posterior {
     
     private let analysesOfWord: [String: MorphologicalAnalyses]
     

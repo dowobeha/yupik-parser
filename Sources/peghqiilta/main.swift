@@ -36,7 +36,7 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
         
-        let learner = Peghqiilta(analyzedCorpus: parsedSentences)
+        let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2)
         
         learner.train()
     

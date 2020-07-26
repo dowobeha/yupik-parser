@@ -1,68 +1,62 @@
+import NgramLM
 import Qamani
 
 public struct Peghqiilta {
     
     let analyzedCorpus: Qamani
+    let analyses: [MorphologicalAnalyses]
+    let orderOfMorphLM: NgramOrder
     
     public let startOfWord = "<w>"
     public let endOfWord = "</w>"
     
-    public init(analyzedCorpus: Qamani) {
+    public init(analyzedCorpus: Qamani, orderOfMorphLM: Int) {
         self.analyzedCorpus = analyzedCorpus
+        self.analyses = self.analyzedCorpus.flatMap({$0.words}).compactMap({$0.analyses})
+        self.orderOfMorphLM = orderOfMorphLM
     }
     
     public func train() {
-       return
-    }
-        
-    public func collectCounts(using p_μ: Posterior, ngramLength: Int) -> Counts {
-        
-        typealias NgramContext = String
-        typealias NgramFinalMorpheme = String
-        
-        // Initialize empty dictionary of n-gram counts
-        var countDictionary = [NgramContext: [NgramFinalMorpheme: Float]]()
-        
-        for analyses in self.analyzedCorpus.flatMap({$0.words}).compactMap({$0.analyses}) {
-            let word = analyses.parsedSurfaceForm
+        let morphCounts = self.collectCounts(using: NaivePosterior(self.analyses), ngramLength: self.orderOfMorphLM)
+        let morphLM = self.estimateModel(from: morphCounts)
+        for analyses in self.analyses {
             for analysis in analyses.analyses {
-                if analysis.morphemes.count >= ngramLength {
-                    for contextStart in 0...(analysis.morphemes.count - ngramLength) {
-                        let contextEnd = contextStart + ngramLength - 1
-                        
-                        // Create a morpheme-delimited string representing the n-gram context
-                        let context: NgramContext = (analysis.morphemes[contextStart...contextEnd]).joined(separator: analyzedCorpus.morphemeDelimiter)
-                        
-                        // Get the final morpheme in the n-gram
-                        let finalMorpheme: NgramFinalMorpheme = analysis.morphemes[contextEnd+1]
-                        
-                        // Set count( finalMorpheme | context ) += p_μ(analysis.underlyingForm | word) :
-                        // ------------------------------------------------------------------------------
-                        // 1) Access the inner dictionary representing all counts with this context
-                        var completionCounts: [NgramFinalMorpheme: Float] = countDictionary[context, default: [NgramFinalMorpheme: Float]()]
-                        //
-                        // 2) Get the current value of the inner dictionary for the finalMorpheme
-                        let previousCount: Float = completionCounts[finalMorpheme, default: 0.0]
-                        //
-                        // 3) Calculate the new count by adding a fractional count based on the current estimate of the posterior
-                        let newCount: Float = previousCount + p_μ(analysis.underlyingForm | word)
-                        //
-                        // 4) Insert the new count into the inner dictionary
-                        completionCounts.updateValue(newCount, forKey: finalMorpheme)
-                        //
-                        // 5) Insert the updated inner dictionary into the outer dictionary
-                        countDictionary.updateValue(completionCounts, forKey: context)
-                        
-                    }
-                }
+                let prob = morphLM(analysis.underlyingForm, addTags: true)
+                print("\(analyses.parsedSurfaceForm)\t\(prob)\t\(analysis.underlyingForm)")
             }
         }
-        return Counts(countDictionary)
+    }
+    
+    
+    
+    public func collectCounts(using p_μ: Posterior, ngramLength: Int) -> Counts {
+
+        let lines: [WeightedLine] = self.analyses.flatMap({ (analyses: MorphologicalAnalyses) -> [WeightedLine] in
+            let underlyingForms: [MorphologicalAnalysis] = analyses.analyses
+            let surfaceForm = analyses.parsedSurfaceForm
+            let weightedLines = underlyingForms.map({ (analysis: MorphologicalAnalysis) -> WeightedLine in
+                return WeightedLine(line: analysis.underlyingForm, weight: p_μ(analysis.underlyingForm | surfaceForm))
+            })
+            return weightedLines
+        })
+        
+        return Counts(from: WeightedCorpus(weightedLines: lines), ngramOrder: ngramLength, tokenize: MorphemeTokenize())
  
     }
     
-    public func estimatePrior(from counts: Counts) -> Void {
-        
+    public func estimateModel(from counts: Counts) -> NgramLM {
+        return NgramLM(counts)
     }
 
+}
+
+public struct MorphemeTokenize: Tokenize {
+    public func callAsFunction(_ line: Line, addTags: Bool = true) -> Tokens {
+        let tokens = line.replacingOccurrences(of: "=", with: "^").split(separator: "^").map{Token($0)}
+        if addTags {
+            return ["<s>"] + tokens + ["</s>"]
+        } else {
+            return tokens
+        }
+    }
 }

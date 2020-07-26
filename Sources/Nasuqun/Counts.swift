@@ -1,3 +1,4 @@
+/*
 public struct Counts {
     
     var countDictionary: [String: [String: Float]]
@@ -8,3 +9,4 @@ public struct Counts {
  
     
 }
+*/

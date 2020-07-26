@@ -34,7 +34,7 @@ let package = Package(
         Package.Dependency.package(
             name: "NgramLM",
             url: "https://github.com/dowobeha/NgramLM.git",
-            from: "0.1.0"
+            from: "0.1.3"
         )
     ],
     targets: [
