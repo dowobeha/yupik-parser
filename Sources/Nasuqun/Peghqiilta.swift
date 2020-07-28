@@ -1,6 +1,7 @@
 import Foundation
 import NgramLM
 import Qamani
+import Threading
 
 public struct Peghqiilta {
       
