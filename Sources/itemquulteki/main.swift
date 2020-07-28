@@ -1,6 +1,7 @@
 import ArgumentParser
 import Foundation
 import Qamani
+import Threading
 
 /// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 struct CommandLineProgram: ParsableCommand {
