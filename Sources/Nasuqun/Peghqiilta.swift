@@ -18,10 +18,10 @@ public struct Peghqiilta {
     
     public func train() {
         var stderr = FileHandle.standardError
-        print("Collecting counts...", to: &stderr)
+        print("\(getTimeAsString())\tCollecting counts...", to: &stderr)
         let morphCounts = self.collectCounts(using: NaivePosterior(self.analyses), ngramLength: self.orderOfMorphLM)
         
-        print("Estimating model...", to: &stderr)
+        print("\(getTimeAsString())\tEstimating model...", to: &stderr)
         let morphLM = self.estimateModel(from: morphCounts)
         
         struct Probs {
@@ -31,7 +31,7 @@ public struct Peghqiilta {
             let analysisGivenWord: Weight
         }
         
-        print("Processing analyses...", to: &stderr)
+        print("\(getTimeAsString())\tProcessing analyses...", to: &stderr)
         for analyses in Progress(self.analyses) {
             
             // For each analysis, calculate unnormalized P(analysis|word) = P(word | analysis) * P(analysis) / P(word), where P(word | analysis) is assumed to be 1.0
@@ -71,6 +71,8 @@ public struct Peghqiilta {
                 print("\(analyses.parsedSurfaceForm)\t\(p.analysisGivenWord)\t\(p.wordLM)\t\(p.morphLM)\t\(analysis.underlyingForm)")
             }
         }
+        
+        print("\(getTimeAsString())\tDone")
     }
     
     

@@ -37,6 +37,10 @@ func getTimeOfDay() -> Double {
     return Double(tv.tv_sec) + Double(tv.tv_usec) / 1000000
 }
 
+public func getTimeAsString() -> String {
+    return formatDuration(getTimeOfDay())
+}
+
 extension Double {
     func format(_ decimalPartLength: Int, minimumIntegerPartLength: Int = 0) -> String {
         let value = String(self)
@@ -270,6 +274,13 @@ public struct ProgressPercent: ProgressElementType {
     }
 }
 
+public func formatDuration(_ duration: Double) -> String {
+    let duration = Int(duration)
+    let seconds = Double(duration % 60)
+    let minutes = Double((duration / 60) % 60)
+    let hours = Double(duration / 3600)
+    return "\(hours.format(0, minimumIntegerPartLength: 2)):\(minutes.format(0, minimumIntegerPartLength: 2)):\(seconds.format(0, minimumIntegerPartLength: 2))"
+}
 
 /// the time estimates e.g. "ETA: 00:00:02 (at 1.00 it/s)"
 public struct ProgressTimeEstimates: ProgressElementType {
@@ -290,13 +301,6 @@ public struct ProgressTimeEstimates: ProgressElementType {
         return "ETA: \(estimatedTimeRemainingString) (at \(itemsPerSecond.format(2))) it/s)"
     }
     
-    fileprivate func formatDuration(_ duration: Double) -> String {
-        let duration = Int(duration)
-        let seconds = Double(duration % 60)
-        let minutes = Double((duration / 60) % 60)
-        let hours = Double(duration / 3600)
-        return "\(hours.format(0, minimumIntegerPartLength: 2)):\(minutes.format(0, minimumIntegerPartLength: 2)):\(seconds.format(0, minimumIntegerPartLength: 2))"
-    }
 }
 
 
