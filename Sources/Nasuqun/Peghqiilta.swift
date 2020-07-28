@@ -17,7 +17,7 @@ public struct Peghqiilta {
         self.wordLM = wordLM
     }
     
-    public func train() {
+    public func train() -> Posterior {
         var stderr = FileHandle.standardError
         print("\(getTimeAsString())\tCollecting counts...", to: &stderr)
         let morphCounts = self.collectCounts(using: NaivePosterior(self.analyses), ngramLength: self.orderOfMorphLM)
@@ -31,6 +31,10 @@ public struct Peghqiilta {
             let wordGivenAnalysis: Weight
             let analysisGivenWord: Weight
         }
+        
+        typealias ValueType = String
+        typealias GivenType = String
+        var result = [GivenType: [ValueType: Weight]]()
         
         print("\(getTimeAsString())\tProcessing analyses...", to: &stderr)
         for analyses in Progress(self.analyses) {
@@ -67,13 +71,18 @@ public struct Peghqiilta {
                              analysisGivenWord: p.analysisGivenWord / denominator)
             }
             
+            var valuesDict = [ValueType: Weight]()
             // Print results
             for (analysis, p) in zip(analyses.analyses, normalizedScores) {
+                valuesDict[analysis.underlyingForm] = p.analysisGivenWord
                 print("\(analyses.parsedSurfaceForm)\t\(p.analysisGivenWord)\t\(p.wordLM)\t\(p.morphLM)\t\(analysis.underlyingForm)")
             }
+            
+            result[analyses.parsedSurfaceForm] = valuesDict
         }
         
-        print("\(getTimeAsString())\tDone")
+        print("\(getTimeAsString())\tDone", to: &stderr)
+        return PosteriorDistribution(result)
     }
     
     
