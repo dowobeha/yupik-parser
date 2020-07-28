@@ -1,7 +1,7 @@
 import Foma
 
 /// Morphological analyses of a single word
-public struct MorphologicalAnalyses {
+public struct MorphologicalAnalyses: Codable {
     
     /// Surface representation that was successfully analyzed
     public let parsedSurfaceForm: String

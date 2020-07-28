@@ -19,20 +19,12 @@ struct CommandLineProgram: ParsableCommand {
 
     @Option(help:    "Character that delimits morpheme boundaries in the segmented lexical underlying forms and in the segmented surface forms")
     var delimiter: String = "^"
-    
-    enum Mode: String, ExpressibleByArgument { case all, unique, failure }
-    @Option(help:    """
-                     Mode: all     (Print count and value of all analyzes for every word)
-                           unique  (Print count and value of analyses for words with exactly 1 analysis)
-                           failure (Print words that failed to analyze)
 
-                     """)
-    var mode: Mode = Mode.all
-    
-    /// Run morphological analyzer using provided command line arguments.
+    /// Run morphological analyzer(s) using provided command line arguments.
     func run() {
 
         guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
+            print("Unable to initialize analyzer(s)", to: &stderr)
             return
         }
         
@@ -42,6 +34,22 @@ struct CommandLineProgram: ParsableCommand {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }
+        
+        do {
+            let encoder = JSONEncoder()
+            let encodedSentences = try encoder.encode(parsedSentences)
+            let string = String(data: encodedSentences, encoding: String.Encoding.utf8)!
+            print(string)
+        } catch {
+            print("Unable to export data", to: &stderr)
+            return
+        }
+        
+        /*
+        guard let parsedSentences = Qamani.fromJSON(path: "/Users/lanes/work/summer/yupik/qamani/Ch03.json") else {
+                   print("Unable to read \(self.sentences)", to: &stderr)
+                   return
+               }
         
         for sentence in parsedSentences {
 
@@ -67,7 +75,7 @@ struct CommandLineProgram: ParsableCommand {
                 }
             }
         }
-    
+        */
     }
 }
 

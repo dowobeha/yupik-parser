@@ -1,7 +1,7 @@
 import Foma
 
 /// Morphological analysis of a single word
-public struct MorphologicalAnalysis {
+public struct MorphologicalAnalysis: Codable {
     
     public static let startOfWord = "<w>"
     public static let endOfWord = "</w>"

@@ -2,7 +2,7 @@ import Foma
 import Foundation
 
 /// Morphologically analyzed sentence.
-public struct AnalyzedSentence: Sequence, CustomStringConvertible {
+public struct AnalyzedSentence: Sequence, CustomStringConvertible, Codable {
 
     /// Name of the document where this sentence is located.
     public let document: String
