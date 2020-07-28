@@ -20,11 +20,13 @@ struct CommandLineProgram: ParsableCommand {
 
         var stderr = FileHandle.standardError
         
+        print("Reading analyzed corpus from JSON file...", to: &stderr)
         guard let parsedSentences = Qamani.fromJSON(path: self.corpus) else {
             print("Unable to read \(self.corpus)", to: &stderr)
             return
         }
         
+        print("Reading wordLM from file...", to: &stderr)
         guard let wordProbs = WordLM(from: self.wordLogProbs) else {
             print("Unable to read \(self.wordLogProbs)", to: &stderr)
             return
