@@ -23,12 +23,12 @@ struct CommandLineProgram: ParsableCommand {
     /// Run morphological analyzer(s) using provided command line arguments.
     func run() {
 
+        var stderr = FileHandle.standardError
+        
         guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
             print("Unable to initialize analyzer(s)", to: &stderr)
             return
         }
-        
-        var stderr = FileHandle.standardError
         
         guard let parsedSentences: Qamani = itemquulta.analyzeFile(self.sentences) else {
             print("Unable to read \(self.sentences)", to: &stderr)

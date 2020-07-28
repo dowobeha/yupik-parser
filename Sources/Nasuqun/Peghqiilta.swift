@@ -79,6 +79,41 @@ public struct Peghqiilta {
     
     public func collectCounts(using p_μ: Posterior, ngramLength: Int) -> Counts {
 
+        let result = ThreadedArray<WeightedLine>()
+        
+        var progressBar = ProgressBar(count: self.analyses.count)
+        let progressSemaphore = DispatchSemaphore(value: 0)
+        
+        let queue = DispatchQueue.global()
+        let group = DispatchGroup()
+        
+        for analyses in self.analyses {
+            queue.async(group: group) {
+                
+                let underlyingForms: [MorphologicalAnalysis] = analyses.analyses
+                let surfaceForm = analyses.parsedSurfaceForm
+                let weightedLines = underlyingForms.map({ (analysis: MorphologicalAnalysis) -> WeightedLine in
+                    return WeightedLine(line: analysis.underlyingForm, weight: p_μ(analysis.underlyingForm | surfaceForm))
+                })
+                
+                result.append(contentsOf: weightedLines)
+                progressSemaphore.signal()
+            }
+        }
+        
+        for _ in 0..<self.analyses.count {
+            progressSemaphore.wait()
+            progressBar.next()
+        }
+        
+        group.wait()
+        
+        return Counts(from: WeightedCorpus(weightedLines: Array(result)), ngramOrder: ngramLength, tokenize: MorphemeTokenize())
+        
+        // Threaded code above
+        // -------------------
+        // Old code below
+        /*
         let lines: [WeightedLine] = self.analyses.flatMap({ (analyses: MorphologicalAnalyses) -> [WeightedLine] in
             let underlyingForms: [MorphologicalAnalysis] = analyses.analyses
             let surfaceForm = analyses.parsedSurfaceForm
@@ -89,7 +124,7 @@ public struct Peghqiilta {
         })
         
         return Counts(from: WeightedCorpus(weightedLines: lines), ngramOrder: ngramLength, tokenize: MorphemeTokenize())
- 
+ */
     }
     
     public func estimateModel(from counts: Counts) -> NgramLM {
