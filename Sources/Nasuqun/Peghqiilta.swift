@@ -24,13 +24,51 @@ public struct Peghqiilta {
         print("Estimating model...", to: &stderr)
         let morphLM = self.estimateModel(from: morphCounts)
         
+        struct Probs {
+            let morphLM: Weight
+            let wordLM: Weight
+            let wordGivenAnalysis: Weight
+            let analysisGivenWord: Weight
+        }
+        
         print("Processing analyses...", to: &stderr)
-        for analyses in self.analyses {
-            for analysis in analyses.analyses {
+        for analyses in Progress(self.analyses) {
+            
+            // For each analysis, calculate unnormalized P(analysis|word) = P(word | analysis) * P(analysis) / P(word), where P(word | analysis) is assumed to be 1.0
+            let scores: [Probs] = analyses.analyses.map{ (analysis: MorphologicalAnalysis) -> Probs in
+                
+                // P(analysis)
                 let morphLMProb = morphLM(analysis.underlyingForm, addTags: true)
+                
+                // P(word)
                 let wordLMProb = self.wordLM(analyses.originalSurfaceForm)
-                let newMuProb = morphLMProb / wordLMProb
-                print("\(analyses.parsedSurfaceForm)\t\(newMuProb)\t\(wordLMProb)\t\(morphLMProb)\t\(analysis.underlyingForm)")
+                
+                // We make the simplifying assumption that P(word | analysis) = 1.0
+                let wordGivenAnalysis = Weight(1.0)
+                
+                // Calculate unnormalized P(analysis|word) = P(word | analysis) * P(analysis) / P(word)
+                let unnormalizedAnalysisGivenWord = morphLMProb * wordGivenAnalysis / wordLMProb
+                
+                return Probs(morphLM: morphLMProb,
+                             wordLM: wordLMProb,
+                             wordGivenAnalysis: wordGivenAnalysis,
+                             analysisGivenWord: unnormalizedAnalysisGivenWord)
+            }
+            
+            // Calculate ∑_{a in analyses} unnormalized P(a | word)
+            let denominator = scores.map{$0.analysisGivenWord}.reduce(0.0, +)
+            
+            // Calculate normalized P(analysis|word) = unnormalized P(analysis|word) /  ∑_{a in analyses} unnormalized P(a | word)
+            let normalizedScores = scores.map{ (p: Probs) -> Probs in
+                return Probs(morphLM: p.morphLM,
+                             wordLM: p.wordLM,
+                             wordGivenAnalysis: p.wordGivenAnalysis,
+                             analysisGivenWord: p.analysisGivenWord / denominator)
+            }
+            
+            // Print results
+            for (analysis, p) in zip(analyses.analyses, normalizedScores) {
+                print("\(analyses.parsedSurfaceForm)\t\(p.analysisGivenWord)\t\(p.wordLM)\t\(p.morphLM)\t\(analysis.underlyingForm)")
             }
         }
     }
