@@ -6,7 +6,7 @@ import Threading
 public struct Peghqiilta {
       
     let analyzedCorpus: Qamani
-    let analyses: [MorphologicalAnalyses]
+    public let analyses: [MorphologicalAnalyses]
     let orderOfMorphLM: NgramOrder
     let wordLM: WordLM
     
@@ -17,10 +17,10 @@ public struct Peghqiilta {
         self.wordLM = wordLM
     }
     
-    public func train() -> Posterior {
+    public func train(posterior: Posterior) -> Posterior {
         var stderr = FileHandle.standardError
         print("\(getTimeAsString())\tCollecting counts...", to: &stderr)
-        let morphCounts = self.collectCounts(using: NaivePosterior(self.analyses), ngramLength: self.orderOfMorphLM)
+        let morphCounts = self.collectCounts(using: posterior, ngramLength: self.orderOfMorphLM)
         
         print("\(getTimeAsString())\tEstimating model...", to: &stderr)
         let morphLM = self.estimateModel(from: morphCounts)

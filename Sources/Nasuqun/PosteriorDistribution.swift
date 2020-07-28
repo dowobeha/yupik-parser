@@ -1,3 +1,5 @@
+import NgramLM
+
 public struct PosteriorDistribution : Posterior {
 
     private let data: [GivenType: [ValueType: Weight]]
