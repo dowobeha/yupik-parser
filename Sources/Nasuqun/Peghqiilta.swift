@@ -85,7 +85,23 @@ public struct Peghqiilta {
         return PosteriorDistribution(result)
     }
     
-    
+    public func sampleMorphologicalAnalyses(using p_μ: Posterior, times: Int, createCorpus corpusPath: String, createLM lmPath: String) -> String? {
+        var stderr = FileHandle.standardError
+        FileManager.default.createFile(atPath: corpusPath, contents: nil, attributes: nil)
+        if var corpus = FileHandle(forWritingAtPath: corpusPath) {
+            let weightedCorpus = self.analyses.map{WeightedAnalyses($0, weightedBy: p_μ)}
+            for _ in 0..<times {
+                for weightedAnalyses in weightedCorpus {
+//                    corpus.write(weightedAnalyses.sample().data(using: .utf8)!)
+                    print(weightedAnalyses.sample().replacingOccurrences(of: "^", with: " ").replacingOccurrences(of: "=", with: " "), to: &corpus)
+                }
+            }
+            return nil
+        } else {
+            print("ERROR", to: &stderr)
+            return nil
+        }
+    }
     
     public func collectCounts(using p_μ: Posterior, ngramLength: Int) -> Counts {
 

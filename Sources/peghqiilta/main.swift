@@ -48,6 +48,9 @@ struct CommandLineProgram: ParsableCommand {
         
         let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2, wordLM: wordProbs)
         
+        learner.sampleMorphologicalAnalyses(using: NaivePosterior(learner.analyses), times: 100, createCorpus: "/nas/models/experiment/qamani.experiment/corpus.tmp", createLM: "/nas/models/experiment/qamani.experiment/lm.tmp")
+        
+        /*
         print("EM iteration 1 using naive posterior...", to: &stderr)
         var updatedModel = learner.train(iteration: 1, posterior: NaivePosterior(learner.analyses))
     
@@ -55,6 +58,7 @@ struct CommandLineProgram: ParsableCommand {
             print("EM iteration \(i)...", to: &stderr)
             updatedModel = learner.train(iteration: i, posterior: updatedModel)
         }
+ */
     }
 }
 
