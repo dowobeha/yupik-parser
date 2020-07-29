@@ -48,10 +48,13 @@ struct CommandLineProgram: ParsableCommand {
         
         let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2, wordLM: wordProbs)
         
-        print("EM using naive posterior...", to: &stderr)
-        let updatedModel = learner.train(posterior: NaivePosterior(learner.analyses))
+        print("EM iteration 1 using naive posterior...", to: &stderr)
+        var updatedModel = learner.train(iteration: 1, posterior: NaivePosterior(learner.analyses))
     
-        let _ = learner.train(posterior: updatedModel)
+        for i in 2..<30 {
+            print("EM iteration \(i)...", to: &stderr)
+            updatedModel = learner.train(iteration: i, posterior: updatedModel)
+        }
     }
 }
 

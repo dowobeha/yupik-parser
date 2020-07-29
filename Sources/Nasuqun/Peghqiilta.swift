@@ -17,12 +17,12 @@ public struct Peghqiilta {
         self.wordLM = wordLM
     }
     
-    public func train(posterior: Posterior) -> Posterior {
+    public func train(iteration: Int, posterior: Posterior) -> Posterior {
         var stderr = FileHandle.standardError
-        print("\(getTimeAsString())\tCollecting counts...", to: &stderr)
+        print("Iteration \(iteration)\t\(getTimeAsString())\tCollecting counts...", to: &stderr)
         let morphCounts = self.collectCounts(using: posterior, ngramLength: self.orderOfMorphLM)
         
-        print("\(getTimeAsString())\tEstimating model...", to: &stderr)
+        print("Iteration \(iteration)\t\(getTimeAsString())\tEstimating model...", to: &stderr)
         let morphLM = self.estimateModel(from: morphCounts)
         
         struct Probs {
@@ -36,7 +36,7 @@ public struct Peghqiilta {
         typealias GivenType = String
         var result = [GivenType: [ValueType: Weight]]()
         
-        print("\(getTimeAsString())\tProcessing analyses...", to: &stderr)
+        print("Iteration \(iteration)\t\(getTimeAsString())\tProcessing analyses...", to: &stderr)
         for analyses in Progress(self.analyses) {
             
             // For each analysis, calculate unnormalized P(analysis|word) = P(word | analysis) * P(analysis) / P(word), where P(word | analysis) is assumed to be 1.0
@@ -75,13 +75,13 @@ public struct Peghqiilta {
             // Print results
             for (analysis, p) in zip(analyses.analyses, normalizedScores) {
                 valuesDict[analysis.underlyingForm] = p.analysisGivenWord
-                print("\(analyses.parsedSurfaceForm)\t\(p.analysisGivenWord)\t\(p.wordLM)\t\(p.morphLM)\t\(analysis.underlyingForm)")
+                print("Iteration \(iteration)\t\(analyses.parsedSurfaceForm)\t\(p.analysisGivenWord)\t\(p.wordLM)\t\(p.morphLM)\t\(analysis.underlyingForm)")
             }
             
             result[analyses.parsedSurfaceForm] = valuesDict
         }
         
-        print("\(getTimeAsString())\tDone", to: &stderr)
+        print("Iteration \(iteration)\t\(getTimeAsString())\tComplete", to: &stderr)
         return PosteriorDistribution(result)
     }
     
