@@ -45,6 +45,13 @@ struct CommandLineProgram: ParsableCommand {
                 
                 let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.morphemes }.joined(separator: "\t")
                 
+                if let as: MorphologicalAnalyses = word.analyses {
+                    print("\(word.originalSurfaceForm)\t\(as.analyses.morphemes)", to: &stderr)
+                } else {
+                    print("\(word.originalSurfaceForm)\tFAILED", to: &stderr)
+                }
+                
+                
                 if let parsedSurfaceForm: String = word.analyses==nil ? nil : word.analyses!.parsedSurfaceForm {
                     print("\(sentence.document)\t\(sentence.lineNumber)\t\(word.wordNumber)\t\(word.count)\t\(word.originalSurfaceForm)\t\(parsedSurfaceForm)\t\(analyses)")
                 }
