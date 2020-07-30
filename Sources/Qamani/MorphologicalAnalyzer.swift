@@ -28,26 +28,27 @@ public struct MorphologicalAnalyzer {
      - Returns: A list of analyses, or nil if the analysis failed
     */
     public func analyzeWord(_ surfaceForm: String) -> MorphologicalAnalyses? {
-        print("MorphologicalAnalyzer.analyzeWord 1:\t\"\(surfaceForm)\"", to: &stderr)
+        //print("MorphologicalAnalyzer.analyzeWord 1:\t\"\(surfaceForm)\"", to: &stderr)
         var analyses = [MorphologicalAnalysis]()
 
+        // In principle, this shouldn't be necessary, but doing this appears to prevent a bizarre bug on Linux
         let _ = self.l2s.applyUp("", lowercaseBackoff: true, removePunctBackoff: false)
         
         if let applyUpResult = self.l2s.applyUp(surfaceForm, lowercaseBackoff: true, removePunctBackoff: false) {
             let parsedSurfaceForm = applyUpResult.input
             let upperForms = applyUpResult.outputs
-            print("MorphologicalAnalyzer.analyzeWord 2:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"", to: &stderr)
+            //print("MorphologicalAnalyzer.analyzeWord 2:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"", to: &stderr)
             for analysis in upperForms {
-                print("MorphologicalAnalyzer.analyzeWord 3:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analysis)\"\t\(upperForms.count)", to: &stderr)
+                //print("MorphologicalAnalyzer.analyzeWord 3:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analysis)\"\t\(upperForms.count)", to: &stderr)
                 if let applyDownResult = self.l2is.applyDown(analysis),
                     let matchingIntermediteForm = applyDownResult.outputs.filter({$0.replacingOccurrences(of: self.delimiter, with: "").replacingOccurrences(of: self.nullMorpheme, with: "") == parsedSurfaceForm}).first {
                                    
-                    print("MorphologicalAnalyzer.analyzeWord 4a:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"\t\"\(matchingIntermediteForm)\"", to: &stderr)
+                    //print("MorphologicalAnalyzer.analyzeWord 4a:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"\t\"\(matchingIntermediteForm)\"", to: &stderr)
                     analyses.append(MorphologicalAnalysis(analysis,
                                                           withIntermediateForm: matchingIntermediteForm,
                                                           delimiter: self.delimiter))
                 } else {
-                    print("MorphologicalAnalyzer.analyzeWord 4b:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"\t\"nil\"", to: &stderr)
+                    //print("MorphologicalAnalyzer.analyzeWord 4b:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(upperForms.count)\"\t\"nil\"", to: &stderr)
                     // We have an analysis, but l2i can't reproduce the surface form
                     analyses.append(MorphologicalAnalysis(analysis,
                                                           withIntermediateForm: nil,
@@ -55,12 +56,12 @@ public struct MorphologicalAnalyzer {
                 }
             }
             
-            print("MorphologicalAnalyzer.analyzeWord 5:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analyses.count)\"\t\"\(analyses.first!)\"", to: &stderr)
+            //print("MorphologicalAnalyzer.analyzeWord 5:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analyses.count)\"\t\"\(analyses.first!)\"", to: &stderr)
             return MorphologicalAnalyses(analyses, of: parsedSurfaceForm, originally: surfaceForm, parsedBy: self.name)
 
         } else {
 
-            print("MorphologicalAnalyzer.analyzeWord nil", to: &stderr)
+            //print("MorphologicalAnalyzer.analyzeWord nil", to: &stderr)
             return nil
             
         }
