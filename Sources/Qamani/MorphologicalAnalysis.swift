@@ -9,7 +9,7 @@ public struct MorphologicalAnalysis: Codable {
     /// A single morphological analysis of a word, as represented by a morpheme-delimited string of underlying lexical morphemes.
     public let underlyingForm: String
     
-    public let morphemes: [String]
+    public let morphemes: String //[String]
     
     /// List matching intermediate form(s)
     public let intermediateForm: String?
@@ -19,7 +19,8 @@ public struct MorphologicalAnalysis: Codable {
      */
     public init(_ underlyingForm: String, withIntermediateForm intermediateForm: String?, delimiter: String) {
         self.underlyingForm = underlyingForm
-        self.morphemes = [MorphologicalAnalysis.startOfWord] + underlyingForm.components(separatedBy: delimiter) + [MorphologicalAnalysis.endOfWord]
+        //self.morphemes = [MorphologicalAnalysis.startOfWord] + underlyingForm.components(separatedBy: delimiter) + [MorphologicalAnalysis.endOfWord]
+        self.morphemes = underlyingForm.replacingOccurrences(of: "=", with: delimiter).replacingOccurrences(of: delimiter, with: " ")
         self.intermediateForm = intermediateForm
     }
 

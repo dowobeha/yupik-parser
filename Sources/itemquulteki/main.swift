@@ -36,6 +36,23 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
         
+        for sentence in parsedSentences {
+
+            for word in sentence {
+                
+                // Join all morphological analyses together with tabs
+                //let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ "\($0.underlyingForm) \($0.intermediateForm ?? "FAILURE")" }.joined(separator: "\t")
+                
+                let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.morphemes }.joined(separator: "\t")
+                
+                if let parsedSurfaceForm: String = word.analyses==nil ? nil : word.analyses!.parsedSurfaceForm {
+                    print("\(sentence.document)\t\(sentence.lineNumber)\t\(word.wordNumber)\t\(word.count)\t\(word.originalSurfaceForm)\t\(parsedSurfaceForm)\t\(analyses)")
+                }
+
+            }
+        }
+        
+        /*
         do {
             let encoder = JSONEncoder()
             let encodedSentences = try encoder.encode(parsedSentences)
@@ -46,12 +63,13 @@ struct CommandLineProgram: ParsableCommand {
             return
         }
         
-        /*
         guard let parsedSentences = Qamani.fromJSON(path: "/Users/lanes/work/summer/yupik/qamani/Ch03.json") else {
                    print("Unable to read \(self.sentences)", to: &stderr)
                    return
                }
+        */
         
+        /*
         for sentence in parsedSentences {
 
             let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
