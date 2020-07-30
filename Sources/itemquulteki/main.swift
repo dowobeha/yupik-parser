@@ -47,7 +47,7 @@ struct CommandLineProgram: ParsableCommand {
                 
                 if let ans: MorphologicalAnalyses = word.analyses {
                     if let firstAnalysis = ans.analyses.first {
-                        print("\(word.originalSurfaceForm)\t\(firstAnalysis.morphemes)\t\(firstAnalysis.underlyingForm)", to: &stderr)
+                        print("\(word.originalSurfaceForm)\t\"\(firstAnalysis.morphemes)\"\t\"\(firstAnalysis.underlyingForm)\"\t\"\(ans.parsedSurfaceForm)\"\tDone", to: &stderr)
                     } else {
                         print("\(word.originalSurfaceForm)\tNO FIRST ANALYSIS", to: &stderr)
                     }
