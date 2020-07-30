@@ -35,7 +35,7 @@ public struct MorphologicalAnalyzer {
             let parsedSurfaceForm = applyUpResult.input
             let upperForms = applyUpResult.outputs
             for analysis in upperForms {
-                 
+                print("MorphologicalAnalyzer.analyzeWord:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analysis)\"\t\(upperForms.count)", to: &stderr)
                 if let applyDownResult = self.l2is.applyDown(analysis),
                     let matchingIntermediteForm = applyDownResult.outputs.filter({$0.replacingOccurrences(of: self.delimiter, with: "").replacingOccurrences(of: self.nullMorpheme, with: "") == parsedSurfaceForm}).first {
                                         
