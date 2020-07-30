@@ -31,6 +31,8 @@ public struct MorphologicalAnalyzer {
         print("MorphologicalAnalyzer.analyzeWord 1:\t\"\(surfaceForm)\"", to: &stderr)
         var analyses = [MorphologicalAnalysis]()
 
+        let _ = self.l2s.applyUp("", lowercaseBackoff: true, removePunctBackoff: false)
+        
         if let applyUpResult = self.l2s.applyUp(surfaceForm, lowercaseBackoff: true, removePunctBackoff: false) {
             let parsedSurfaceForm = applyUpResult.input
             let upperForms = applyUpResult.outputs
