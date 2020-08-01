@@ -2,12 +2,15 @@ import Qamani
 
 public struct NaivePosterior : Posterior {
     
-    private let analysesOfWord: [String: MorphologicalAnalyses]
+//    private let analysesOfWord: [String: MorphologicalAnalyses]
     
-    public init(_ collection: [MorphologicalAnalyses]) {
-        self.analysesOfWord = collection.reduce(into: [String: MorphologicalAnalyses]()) { dict, analyses in
-            dict[analyses.parsedSurfaceForm] = analyses
-        }
+    private let parsedWords: ParsedTSV
+    
+    public init(_ parsedTSV: ParsedTSV) {
+        self.parsedWords = parsedTSV
+  //      self.analysesOfWord = collection.reduce(into: [String: MorphologicalAnalyses]()) { dict, analyses in
+//            dict[analyses.parsedSurfaceForm] = analyses
+//        }
     }
     
     public typealias ValueType = String
@@ -17,8 +20,8 @@ public struct NaivePosterior : Posterior {
         let analysis: String = condition.value
         let word: String = condition.given
         
-        if let analyses = self.analysesOfWord[word], analyses.analyses.contains(where: {$0.underlyingForm == analysis}) {
-            return 1.0 / Float(analyses.count)
+        if let parsedWord = self.parsedWords[word], parsedWord.analyses.contains(where: {$0 == analysis}) {
+            return 1.0 / Float(parsedWord.analyses.count)
         } else {
             return 0.0
         }

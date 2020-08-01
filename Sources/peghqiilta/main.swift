@@ -18,8 +18,8 @@ struct CommandLineProgram: ParsableCommand {
     @Option(help:     "Tab-separated file with format \"logprob\tword\"")
     var wordLogProbs: String
     
-    //@Option(help:    "Text file containing one sentence per line")
-    //var sentences: String
+    @Option(help:    "TSV file")
+    var tsv: String
 
     @Option(help:    "Character that delimits morpheme boundaries")
     var delimiter: String = "^"
@@ -27,7 +27,7 @@ struct CommandLineProgram: ParsableCommand {
     /// Run learning iterations
     func run() {
 
-        var stderr = FileHandle.standardError
+        
 /*
         print("Loading LMs...", to: &stderr)
         guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
@@ -47,7 +47,12 @@ struct CommandLineProgram: ParsableCommand {
 //        }
         
         //let m = SampledMorphLM("foo", n: 5, p: NaivePosterior())
-        let _ = SampledMorphLM()
+        //let _ = SampledMorphLM()
+        
+        if let parsedTSV = ParsedTSV(self.tsv) {
+            let _ = parsedTSV.sample()
+        }
+        
         
         /*
         let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2, wordLM: wordProbs)
