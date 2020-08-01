@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "qamani",
+    platforms: [
+        SupportedPlatform.macOS(.v10_13) // Minumum version of macOS required, if building on macOS. Required for Process.run()
+    ],
     products: [
         Product.executable(
             name: "itemquulteki",

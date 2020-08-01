@@ -102,7 +102,11 @@ public struct Peghqiilta {
             return nil
         }
     }
-    
+    /*
+    public func generateMorphLM() -> Void {
+        /usr/local/bin/foma
+    }
+    */
     public func collectCounts(using p_μ: Posterior, ngramLength: Int) -> Counts {
 
         let result = ThreadedArray<WeightedLine>()
