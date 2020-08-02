@@ -24,6 +24,15 @@ struct CommandLineProgram: ParsableCommand {
     @Option(help:    "Character that delimits morpheme boundaries")
     var delimiter: String = "^"
 
+    @Option(help:    "Path to lmplz")
+    var lmplz: String
+    
+    @Option(help:    "Path to query")
+    var query: String
+    
+    @Option(help: "Path where ARPA file will be created")
+    var arpa: String
+    
     /// Run learning iterations
     func run() {
 
@@ -50,7 +59,7 @@ struct CommandLineProgram: ParsableCommand {
         //let _ = SampledMorphLM()
         
         if let parsedTSV = ParsedTSV(self.tsv) {
-            let _ = parsedTSV.sample()
+            let _ = parsedTSV.sample(lmplz: self.lmplz, arpaPath: self.arpa, query: self.query)
         }
         
         

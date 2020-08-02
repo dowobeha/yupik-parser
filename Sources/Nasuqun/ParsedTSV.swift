@@ -43,16 +43,34 @@ public struct ParsedTSV {
         }
     }
     
-    public func sample(times t: Int = 1, posterior p: Posterior? = nil) -> SampledMorphLM {
-        let morphLM = SampledMorphLM()
+    public func sample(lmplz: String, arpaPath: String, query: String, times t: Int = 1, posterior p: Posterior? = nil) -> SampledMorphLM {
+        let morphLM = SampledMorphLM(lmplz: lmplz, arpaPath: arpaPath, query: query)
         
         let posterior = (p==nil) ? NaivePosterior(self) : p!
-        let out: FileHandle = morphLM.inputPipe.fileHandleForWriting
+        let out: FileHandle = morphLM.lmplzInputPipe.fileHandleForWriting
+
+        let queryIn: FileHandle = morphLM.queryInputPipe.fileHandleForWriting
+        let queryOut: FileHandle = morphLM.queryOutputPipe.fileHandleForReading
+
         
         defer {
             out.closeFile()
+            queryIn.closeFile()
+            queryOut.closeFile()
             morphLM.group.wait()
         }
+                
+//        defer {
+//            queryIn.closeFile()
+//        }
+//
+//        defer {
+//            queryOut.closeFile()
+//        }
+//
+//        defer {
+//
+//        }
         
         for analyzedWord in self.data.values {
             
