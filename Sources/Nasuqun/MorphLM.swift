@@ -5,12 +5,12 @@ import Threading
 
 public struct SampledMorphLM {
     
-    let probabality: [String: Float]
+    public let probabality: [String: Float]
     
     private init(_ probs: [String: Float]) {
         self.probabality = probs
     }
- 
+     
     public static func sample(from tsv: ParsedTSV, lmplz: String, arpaPath: String, query: String, times t: Int = 1, posterior p: Posterior? = nil) -> SampledMorphLM? {
         //let morphLM = SampledMorphLM(lmplz: lmplz, arpaPath: arpaPath, query: query)
 

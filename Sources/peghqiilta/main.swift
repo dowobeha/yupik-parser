@@ -58,8 +58,14 @@ struct CommandLineProgram: ParsableCommand {
         //let m = SampledMorphLM("foo", n: 5, p: NaivePosterior())
         //let _ = SampledMorphLM()
         
-        if let parsedTSV = ParsedTSV(self.tsv) {
-//            let _ = Mop.sample(lmplz: self.lmplz, arpaPath: self.arpa, query: self.query)
+    
+        if let parsedTSV = ParsedTSV(self.tsv),
+            let morphLM = SampledMorphLM.sample(from: parsedTSV, lmplz: self.lmplz, arpaPath: self.arpa, query: self.query) {
+
+            for (analysis, prob) in morphLM.probabality {
+                print("\(analysis)\t\(prob)")
+            }
+            
         }
         
         
