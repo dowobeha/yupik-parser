@@ -43,6 +43,7 @@ public struct SampledMorphLM {
         // Launch lmplz in its own thread
         queue.async(group: group) {
             do {
+                print("Launching lmplz \(lmplzTask.description) \(lmplzTask.arguments!)")
                 // Launch lmplz as an external process
                 try lmplzTask.run()
                 
@@ -81,6 +82,7 @@ public struct SampledMorphLM {
                 lmplzTask.waitUntilExit()
                 
             } catch _ {
+                print("Failed while writing values to lmplz standard input")
                 success.store(false)
                 lmplzTask.terminate()
                 queryTask.terminate()
@@ -90,6 +92,7 @@ public struct SampledMorphLM {
         // Launch query in its own thread
         queue.async(group: group) {
             do {
+                print("Launching query \(queryTask.description) \(queryTask.arguments!)")
                 try queryTask.run()
                 
                 for analyzedWord in tsv.data.values {
@@ -101,6 +104,7 @@ public struct SampledMorphLM {
                 queryStandardInput.closeFile()
 
             } catch _ {
+                print("Failed while writing values to query standard input")
                 success.store(false)
                 lmplzTask.terminate()
                 queryTask.terminate()
