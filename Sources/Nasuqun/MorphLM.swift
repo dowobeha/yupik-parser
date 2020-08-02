@@ -11,7 +11,7 @@ public struct SampledMorphLM {
         self.probabality = probs
     }
      
-    public static func sample(from tsv: ParsedTSV, lmplz: String, arpaPath: String, query: String, times t: Int = 1, posterior p: Posterior? = nil) -> SampledMorphLM? {
+    public static func sample(from tsv: ParsedTSV, lmplz: String, arpaPath: String, query: String, times t: Int = 1, order: Int = 5, posterior p: Posterior? = nil) -> SampledMorphLM? {
         //let morphLM = SampledMorphLM(lmplz: lmplz, arpaPath: arpaPath, query: query)
 
         // If any thread fails, it will set this value to false
@@ -22,7 +22,7 @@ public struct SampledMorphLM {
         let lmplzInputPipe = Pipe()
         let lmplzStandardInput: FileHandle = lmplzInputPipe.fileHandleForWriting
         lmplzTask.executableURL = URL(fileURLWithPath: lmplz)
-        lmplzTask.arguments = ["--arpa", arpaPath]
+        lmplzTask.arguments = ["--order", String(order), "--arpa", arpaPath]
         lmplzTask.standardInput = lmplzInputPipe
         
         // Configure process to query LM using query
