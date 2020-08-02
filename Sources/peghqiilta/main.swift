@@ -59,7 +59,7 @@ struct CommandLineProgram: ParsableCommand {
         //let _ = SampledMorphLM()
         
         if let parsedTSV = ParsedTSV(self.tsv) {
-            let _ = parsedTSV.sample(lmplz: self.lmplz, arpaPath: self.arpa, query: self.query)
+//            let _ = Mop.sample(lmplz: self.lmplz, arpaPath: self.arpa, query: self.query)
         }
         
         
