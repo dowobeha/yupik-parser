@@ -3,9 +3,35 @@ import Foundation
 import Qamani
 import Threading
 
-/// Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
-struct CommandLineProgram: ParsableCommand {
+/**
+   Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
+
+   > **itemquulteki**
+   > *итымқӯльтыки*
+   > /i.'təm.'quːɬ.tə.ki/
+   >
+   > let's take them apart
+   >
+   > (transitive verb, optative mood, 1st person plural subject, 3rd person plural object)
+   >
+   > (*Badten et al, 2008*)
+
+ */
+struct Itemquulteki: ParsableCommand {
     
+    static var configuration = CommandConfiguration(
+            abstract: "Morphological analyzer capable of analyzing each word in each sentence of a provided text file.",
+            discussion: """
+                    Itemquulteki!
+                    Let's take them apart!
+                """)
+
+    @Option(help:    "Text file containing one sentence per line")
+    var sentences: String
+
+    @Option(help:    "Character that delimits morpheme boundaries in the segmented lexical underlying forms and in the segmented surface forms")
+    var delimiter: String = "^"
+
     @Option(help:    "Descriptive name to use for a given pair of FSTs (l2s & l2is)")
     var name: [String] = []
     
@@ -14,12 +40,6 @@ struct CommandLineProgram: ParsableCommand {
 
     @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
     var l2is: [String] = []
-
-    @Option(help:    "Text file containing one sentence per line")
-    var sentences: String
-
-    @Option(help:    "Character that delimits morpheme boundaries in the segmented lexical underlying forms and in the segmented surface forms")
-    var delimiter: String = "^"
 
     /// Run morphological analyzer(s) using provided command line arguments.
     func run() {
@@ -110,4 +130,4 @@ struct CommandLineProgram: ParsableCommand {
 }
 
 
-CommandLineProgram.main()
+Itemquulteki.main()

@@ -3,8 +3,19 @@ import Foundation
 import Qamani
 import Nasuqun
 
-/// Learn models
-struct CommandLineProgram: ParsableCommand {
+/**
+   Learn models
+
+   > **peghqiilta**
+   > *пҳқӣльта*
+   > /pəχ.'qiːɬ.tɑ/
+   >
+   > (intransitive verb, optative mood, 1st person plural subject)
+   > let's train
+   >
+   > (*Badten et al, 2008*)
+ */
+struct Peghqiilta: ParsableCommand {
 
 //    @Option(help:    "Descriptive name to use for a given pair of FSTs (l2s & l2is)")
 //    var name: [String] = []
@@ -14,6 +25,13 @@ struct CommandLineProgram: ParsableCommand {
 //
 //    @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
 //    var l2is: [String] = []
+
+    static var configuration = CommandConfiguration(
+            abstract: "Machine learning program for training",
+            discussion: """
+                    Peghqiilta!
+                    Let's train!
+                """)
 
     @Option(help:     "Tab-separated file with format \"logprob\tword\"")
     var wordLogProbs: String
@@ -89,4 +107,4 @@ struct CommandLineProgram: ParsableCommand {
 }
 
 
-CommandLineProgram.main()
+Peghqiilta.main()
