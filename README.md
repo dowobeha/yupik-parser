@@ -7,6 +7,8 @@ Given a user-provided morphological analyzer implemented in [foma](https://fomaf
 The corpus must be a text file containing one sentence per line. It should work even if you haven’t removed punctuation from words.
 
 
+> **nasuqun** *насюқун* /nɑ.'suː.qun/ — (noun, absolutive case, singular, from **nasuqe-** 'to estimate') model <br> (*Badten et al, 2008*, p. 289)
+
 ## How to compile
 
 Ensure that you have [Swift 5.2](https://www.swift.org/download) or later installed.
