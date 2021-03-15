@@ -38,6 +38,10 @@ let package = Package(
             name: "NgramLM",
             url: "https://github.com/dowobeha/NgramLM.git",
             from: "0.1.6"
+        ),
+        Package.Dependency.package( // Needed for Swift package manager to see zlib
+            url: "https://github.com/apple/swift-nio-zlib-support.git",
+            from: "1.0.0"
         )
     ],
     targets: [
@@ -92,8 +96,9 @@ let package = Package(
                     package: "StreamReader"),
                 Target.Dependency.product(
                     name: "Threading",
-                    package: "Threading")
+                    package: "Threading"),
             ]),
+        Target.systemLibrary(name: "zlib"),
         Target.testTarget(
             name: "qamaniTests",
             dependencies: [
