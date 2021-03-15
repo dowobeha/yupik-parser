@@ -21,7 +21,7 @@ let package = Package(
         Package.Dependency.package(
             name: "Foma",
             url: "https://github.com/dowobeha/Foma.git",
-            from: "0.3.4"),
+            from: "0.3.5"),
         Package.Dependency.package(
             name: "swift-argument-parser",
             url: "https://github.com/apple/swift-argument-parser.git",
