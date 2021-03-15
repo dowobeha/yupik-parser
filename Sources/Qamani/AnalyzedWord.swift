@@ -18,6 +18,7 @@ public struct AnalyzedWord: Codable {
     /// List of morphological analyses of the word
     public let analyses: MorphologicalAnalyses?
     
+    /// Number of morphological analyses of the word
     public let count: Int
     
     /// Performs morphological analysis of a word in a document, storing the results.

@@ -32,7 +32,7 @@ struct Peghqiilta: ParsableCommand {
                     Peghqiilta!
                     Let's train!
                 """)
-
+/*
     @Option(help:     "Tab-separated file with format \"logprob\tword\"")
     var wordLogProbs: String
     
@@ -50,11 +50,35 @@ struct Peghqiilta: ParsableCommand {
     
     @Option(help: "Path where ARPA file will be created")
     var arpa: String
-    
+    */
     /// Run learning iterations
     func run() {
 
+        let m = MorphologicalAnalysis("qikmigh^[Abs.Sg]", withIntermediateForm: "qikmiq^{0}", delimiter: "^")
+  
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(m)
+            
+            let jsonString = String(data: data, encoding: .utf8)!
+            
+            print(jsonString)
+            
+            let jsonData = jsonString.data(using: .utf8)!
+            
+            let decoder = JSONDecoder()
+            
+            let m2 = try decoder.decode(MorphologicalAnalysis.self, from: jsonData)
+            
+            print(m2)
+            
+        } catch {
+            print("Problem")
+        }
         
+        
+       
 /*
         print("Loading LMs...", to: &stderr)
         guard let itemquulta = Itemquulta(name: self.name, l2s: self.l2s, l2is: self.l2is, delimiter: self.delimiter) else {
@@ -76,7 +100,7 @@ struct Peghqiilta: ParsableCommand {
         //let m = SampledMorphLM("foo", n: 5, p: NaivePosterior())
         //let _ = SampledMorphLM()
         
-    
+    /*
         if let parsedTSV = ParsedTSV(self.tsv),
             let morphLM = SampledMorphLM.sample(from: parsedTSV, lmplz: self.lmplz, arpaPath: self.arpa, query: self.query) {
 
@@ -85,7 +109,7 @@ struct Peghqiilta: ParsableCommand {
             }
             
         }
-        
+        */
         
         /*
         let learner = Peghqiilta(analyzedCorpus: parsedSentences, orderOfMorphLM: 2, wordLM: wordProbs)

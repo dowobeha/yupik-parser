@@ -58,30 +58,38 @@ public struct Itemquulta {
             let nonBlankLines = lines.filter{!($0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty)}
             
             let result = ThreadedArray<AnalyzedSentence>()
+            //let result2 = ThreadedArray<String>()
             
-            var progressBar = ProgressBar(count: nonBlankLines.count)
-            let progressSemaphore = DispatchSemaphore(value: 0)
+            //var progressBar = ProgressBar(count: nonBlankLines.count)
+            //let progressSemaphore = DispatchSemaphore(value: 0)
             
-            let queue = DispatchQueue.global()
-            let group = DispatchGroup()
+            //let queue = DispatchQueue.global()
+            //let group = DispatchGroup()
             
             for (offset, line) in nonBlankLines.enumerated() {
-                queue.async(group: group) {
+                //queue.async(group: group) {
                     let tokens = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
                     let sentence = self.analyzers.analyzeSentence(tokens: tokens, lineNumber: offset+1, inDocument: document)
+                    //let sentence = "\(offset+1) \(line)"
                     result.append(sentence)
-                    //print(sentence)
-                    progressSemaphore.signal()
-                }
+                    //print(tokens)
+                    //progressSemaphore.signal()
+                //}
             }
             
+            /*
             for _ in 0..<nonBlankLines.count {
                 progressSemaphore.wait()
                 progressBar.next()
             }
+            */
+            //group.wait()
             
-            group.wait()
+//            for result in result2 {
+//                print(result)
+//            }
             
+            //return nil
             return Qamani(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}), morphemeDelimiter: self.delimiter)
 
         } else {

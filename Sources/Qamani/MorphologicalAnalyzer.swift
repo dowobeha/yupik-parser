@@ -8,6 +8,8 @@ public struct MorphologicalAnalyzer {
     private let l2is: FST
     private let delimiter: String
     private let nullMorpheme: String
+    
+    //private let semaphore: DispatchSemaphore
 
     public init(name: String, l2s: FST, l2is: FST, delimiter: String, nullMorpheme: String = "{0}") {
         self.name = name
@@ -15,6 +17,7 @@ public struct MorphologicalAnalyzer {
         self.l2is = l2is
         self.delimiter = delimiter
         self.nullMorpheme = nullMorpheme
+        //self.semaphore = DispatchSemaphore(value: 1)
     }
     
     /**
@@ -28,6 +31,9 @@ public struct MorphologicalAnalyzer {
      - Returns: A list of analyses, or nil if the analysis failed
     */
     public func analyzeWord(_ surfaceForm: String) -> MorphologicalAnalyses? {
+        //print("Waiting for \(self.name) to analyze \"\(surfaceForm)\"")
+        //self.semaphore.wait()
+        //print("\(self.name) will now analyze \"\(surfaceForm)\"")
         //print("MorphologicalAnalyzer.analyzeWord 1:\t\"\(surfaceForm)\"", to: &stderr)
         var analyses = [MorphologicalAnalysis]()
 
@@ -57,11 +63,15 @@ public struct MorphologicalAnalyzer {
             }
             
             //print("MorphologicalAnalyzer.analyzeWord 5:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analyses.count)\"\t\"\(analyses.first!)\"", to: &stderr)
+            //print("\(self.name) is done analyzing \"\(surfaceForm)\"")
+            //self.semaphore.signal()
             return MorphologicalAnalyses(analyses, of: parsedSurfaceForm, originally: surfaceForm, parsedBy: self.name)
 
         } else {
 
             //print("MorphologicalAnalyzer.analyzeWord nil", to: &stderr)
+            //print("\(self.name) failed to analyze \"\(surfaceForm)\"")
+            //self.semaphore.signal()
             return nil
             
         }

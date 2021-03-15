@@ -35,4 +35,22 @@ public struct Qamani: Sequence, Codable {
             return nil
         }
     }
+    
+    public func toJson() -> String? {
+        
+        do {
+            
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(self)
+            
+            let jsonString = String(data: data, encoding: .utf8)!
+            
+            return jsonString
+                
+        } catch {
+            return nil
+        }
+        
+    }
 }

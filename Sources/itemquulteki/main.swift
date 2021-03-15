@@ -3,6 +3,11 @@ import Foundation
 import Qamani
 import Threading
 
+public enum OutputFormat: String, EnumerableFlag {
+    case outputJson
+    case outputTsv
+}
+
 /**
    Morphological analyzer capable of analyzing each word in each sentence of a provided text file.
 
@@ -41,6 +46,9 @@ struct Itemquulteki: ParsableCommand {
     @Option(help:    "Finite-state transducer (lexical underlying form to segmented surface form) in foma binary file format")
     var l2is: [String] = []
 
+    @Flag(help:      "Specify output format as either JSON or TSV")
+    var outputFormat: OutputFormat
+    
     /// Run morphological analyzer(s) using provided command line arguments.
     func run() {
 
@@ -56,76 +64,36 @@ struct Itemquulteki: ParsableCommand {
             return
         }
         
-        for sentence in parsedSentences {
-
-            for word in sentence {
-                
-                // Join all morphological analyses together with tabs
-                //let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ "\($0.underlyingForm) \($0.intermediateForm ?? "FAILURE")" }.joined(separator: "\t")
-                
-                let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.morphemes }.joined(separator: "\t")
-                
-//                if let ans: MorphologicalAnalyses = word.analyses {
-//                    if let firstAnalysis = ans.analyses.first {
-//                        print("\(word.originalSurfaceForm)\t\"\(firstAnalysis.morphemes)\"\t\"\(firstAnalysis.underlyingForm)\"\t\"\(ans.parsedSurfaceForm)\"\tDone", to: &stderr)
-//                    } else {
-//                        print("\(word.originalSurfaceForm)\tNO FIRST ANALYSIS", to: &stderr)
-//                    }
-//                } else {
-//                    print("\(word.originalSurfaceForm)\tFAILED", to: &stderr)
-//                }
-                
-                
-                if let parsedSurfaceForm: String = word.analyses==nil ? nil : word.analyses!.parsedSurfaceForm {
-                    print("\(sentence.document)\t\(sentence.lineNumber)\t\(word.wordNumber)\t\(word.count)\t\(word.originalSurfaceForm)\t\(parsedSurfaceForm)\t\(analyses)")
-                }
-
+        
+        switch self.outputFormat {
+        
+        case .outputJson:
+            if let jsonString = parsedSentences.toJson() {
+                print(jsonString)
+            } else {
+                print("Unable to convert analyzed corpus to JSON", to: &stderr)
+                return
             }
-        }
         
-        /*
-        do {
-            let encoder = JSONEncoder()
-            let encodedSentences = try encoder.encode(parsedSentences)
-            let string = String(data: encodedSentences, encoding: String.Encoding.utf8)!
-            print(string)
-        } catch {
-            print("Unable to export data", to: &stderr)
-            return
-        }
         
-        guard let parsedSentences = Qamani.fromJSON(path: "/Users/lanes/work/summer/yupik/qamani/Ch03.json") else {
-                   print("Unable to read \(self.sentences)", to: &stderr)
-                   return
-               }
-        */
-        
-        /*
-        for sentence in parsedSentences {
+        case .outputTsv:
+            for sentence in parsedSentences {
 
-            let paths: Int = sentence.words.reduce(1, { (r:Int, w:AnalyzedWord) -> Int in return r * w.count})
-            for word in sentence {
-                
-                // Join all morphological analyses together with tabs
-                let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ "\($0.underlyingForm) \($0.intermediateForm ?? "FAILURE")" }.joined(separator: "\t")
-                
-                let parsedSurfaceForm: String = word.analyses==nil ? "FAILURE" : word.analyses!.parsedSurfaceForm
-                
-                switch self.mode {
-                case Mode.all:
-                    print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
-                case Mode.unique:
-                    if word.count == 1 {
-                        print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
+                for word in sentence {
+    
+                    let analyses: String =  word.analyses==nil ? "" : word.analyses!.analyses.map{ $0.morphemes }.joined(separator: "\t")
+                    
+                    if let parsedSurfaceForm: String = word.analyses==nil ? nil : word.analyses!.parsedSurfaceForm {
+                        print("\(sentence.document)\t\(sentence.lineNumber)\t\(word.wordNumber)\t\(word.count)\t\(word.originalSurfaceForm)\t\(parsedSurfaceForm)\t\(analyses)")
                     }
-                case Mode.failure:
-                    if word.analyses == nil {
-                        print("\(word.count)\t\(parsedSurfaceForm)\t\(paths)\tWord \(word.wordNumber) of sentence \(sentence.lineNumber) in document \(sentence.document)\t\(word.originalSurfaceForm)\t\(analyses)")
-                    }
+
                 }
             }
+        
         }
-        */
+        
+        
+    
     }
 }
 

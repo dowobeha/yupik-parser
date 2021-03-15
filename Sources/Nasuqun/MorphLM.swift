@@ -53,7 +53,7 @@ public struct SampledMorphLM {
                 // Perform sampling and write samples to standard input of lmplz
                 for analyzedWord in tsv.data.values {
                     
-                    let word = analyzedWord.word
+                    let word = analyzedWord.analyzedWord
                     
                     // Sample once for each instance of this word in the corpus
                     for _ in 0..<analyzedWord.count {
