@@ -98,7 +98,6 @@ let package = Package(
                     name: "Threading",
                     package: "Threading"),
             ]),
-        Target.systemLibrary(name: "zlib"),
         Target.testTarget(
             name: "qamaniTests",
             dependencies: [
