@@ -3,7 +3,7 @@ import Foundation
 import Qamani
 import Threading
 
-public enum OutputFormat: String, EnumerableFlag {
+enum OutputFormat: String, EnumerableFlag {
     case outputJson
     case outputTsv
 }

@@ -50,6 +50,7 @@ public struct Itemquulta {
      - Returns: A list of morphologically analyzed sentences.
      */
     public func analyzeFile(_ filename: String) -> Qamani? {
+        
         if let lines = StreamReader(path: filename) {
             var document = filename
             if let x = filename.lastIndex(of: "/") {
@@ -63,18 +64,23 @@ public struct Itemquulta {
             //var progressBar = ProgressBar(count: nonBlankLines.count)
             //let progressSemaphore = DispatchSemaphore(value: 0)
             
-            //let queue = DispatchQueue.global()
-            //let group = DispatchGroup()
+            let queue = DispatchQueue.global()
+            let group = DispatchGroup()
             
             for (offset, line) in nonBlankLines.enumerated() {
-                //queue.async(group: group) {
+                queue.async(group: group) {
                     let tokens = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
                     let sentence = self.analyzers.analyzeSentence(tokens: tokens, lineNumber: offset+1, inDocument: document)
                     //let sentence = "\(offset+1) \(line)"
+                    if let json = sentence.toJson() {
+                        print(json, to: &stderr)
+                    } else {
+                        print("Failed to convert \(sentence.description) to JSON", to: &stderr)
+                    }
                     result.append(sentence)
                     //print(tokens)
                     //progressSemaphore.signal()
-                //}
+                }
             }
             
             /*
@@ -83,7 +89,7 @@ public struct Itemquulta {
                 progressBar.next()
             }
             */
-            //group.wait()
+            group.wait()
             
 //            for result in result2 {
 //                print(result)

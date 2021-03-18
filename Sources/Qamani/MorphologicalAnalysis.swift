@@ -11,6 +11,8 @@ public struct MorphologicalAnalysis: Codable {
     /// List matching intermediate form(s)
     public let intermediateForm: String?
     
+    public let delimiter: String
+    
     /**
      Stores a morphological analysis.
      */
@@ -18,6 +20,7 @@ public struct MorphologicalAnalysis: Codable {
         self.underlyingForm = underlyingForm
         self.morphemes = underlyingForm.replacingOccurrences(of: "=", with: delimiter).replacingOccurrences(of: delimiter, with: " ")
         self.intermediateForm = intermediateForm
+        self.delimiter = delimiter
     }
 
 }

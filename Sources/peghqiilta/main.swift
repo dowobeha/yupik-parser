@@ -2,6 +2,8 @@ import ArgumentParser
 import Foundation
 import Qamani
 import Nasuqun
+import StreamReader
+
 
 /**
    Learn models
@@ -32,7 +34,11 @@ struct Peghqiilta: ParsableCommand {
                     Peghqiilta!
                     Let's train!
                 """)
-/*
+    
+    @Option(help:    "JSON-formatted input file containing morphological analyses")
+    var input: String
+
+    /*
     @Option(help:     "Tab-separated file with format \"logprob\tword\"")
     var wordLogProbs: String
     
@@ -53,29 +59,60 @@ struct Peghqiilta: ParsableCommand {
     */
     /// Run learning iterations
     func run() {
-
-        let m = MorphologicalAnalysis("qikmigh^[Abs.Sg]", withIntermediateForm: "qikmiq^{0}", delimiter: "^")
-  
+        
         do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let data = try encoder.encode(m)
+            var jsonString = ""
+            if let lines = StreamReader(path: self.input) {
+                for line in lines {
+                    jsonString += line
+                }
+            }
             
-            let jsonString = String(data: data, encoding: .utf8)!
-            
-            print(jsonString)
-            
-            let jsonData = jsonString.data(using: .utf8)!
-            
-            let decoder = JSONDecoder()
-            
-            let m2 = try decoder.decode(MorphologicalAnalysis.self, from: jsonData)
-            
-            print(m2)
-            
+            if let json = jsonString.data(using: .utf8) {
+                let decoder = JSONDecoder()
+                let parsedSentences: Qamani = try decoder.decode(Qamani.self, from: json)
+                
+                for analyzedSentence in parsedSentences {
+                    print(analyzedSentence)
+                    
+                    for analyzedWord in analyzedSentence {
+                        if let analyses = analyzedWord.analyses {
+                            let weight = 1 / analyses.analyses.count
+                            for analysis in analyses.analyses {
+                                //analysis.weight = weight
+                                print("\(analysis.underlyingForm) \(analysis.weight)")
+                            }
+                        }
+                        //print(analyzedWord)
+                    }
+                }
+            }
         } catch {
             print("Problem")
         }
+        
+//        let m = MorphologicalAnalysis("qikmigh^[Abs.Sg]", withIntermediateForm: "qikmiq^{0}", delimiter: "^")
+//
+//        do {
+//            let encoder = JSONEncoder()
+//            encoder.outputFormatting = .prettyPrinted
+//            let data = try encoder.encode(m)
+//
+//            let jsonString = String(data: data, encoding: .utf8)!
+//
+//            print(jsonString)
+//
+//            let jsonData = jsonString.data(using: .utf8)!
+//
+//            let decoder = JSONDecoder()
+//
+//            let m2 = try decoder.decode(MorphologicalAnalysis.self, from: jsonData)
+//
+//            print(m2)
+//
+//        } catch {
+//            print("Problem")
+//        }
         
         
        
