@@ -61,34 +61,46 @@ public struct Itemquulta {
             let result = ThreadedArray<AnalyzedSentence>()
             //let result2 = ThreadedArray<String>()
             
-            //var progressBar = ProgressBar(count: nonBlankLines.count)
-            //let progressSemaphore = DispatchSemaphore(value: 0)
+            var tokensInCorpus = 0
+            for line in nonBlankLines {
+                for _ in line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ") {
+                    tokensInCorpus += 1
+                }
+            }
             
             let queue = DispatchQueue.global()
             let group = DispatchGroup()
+            
+            var progressBar = ProgressBar(count: tokensInCorpus)
+            let progressSemaphore = DispatchSemaphore(value: 0)
+            
+            // Thread for displaying progress bar
+            queue.async(group: group) {
+                for _ in 0..<tokensInCorpus {
+                    progressSemaphore.wait()
+                    progressBar.next()
+                }
+            }
             
             for (offset, line) in nonBlankLines.enumerated() {
                 queue.async(group: group) {
                     let tokens = line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).split(separator: " ").map{String($0)}
                     let sentence = self.analyzers.analyzeSentence(tokens: tokens, lineNumber: offset+1, inDocument: document)
                     //let sentence = "\(offset+1) \(line)"
-                    if let json = sentence.toJson() {
-                        print(json, to: &stderr)
-                    } else {
-                        print("Failed to convert \(sentence.description) to JSON", to: &stderr)
-                    }
+//                    if let json = sentence.toJson() {
+//                        print(json, to: &stderr)
+//                    } else {
+//                        print("Failed to convert \(sentence.description) to JSON", to: &stderr)
+//                    }
                     result.append(sentence)
                     //print(tokens)
-                    //progressSemaphore.signal()
+                    for _ in tokens {
+                        progressSemaphore.signal()
+                    }
                 }
             }
             
-            /*
-            for _ in 0..<nonBlankLines.count {
-                progressSemaphore.wait()
-                progressBar.next()
-            }
-            */
+           
             group.wait()
             
 //            for result in result2 {

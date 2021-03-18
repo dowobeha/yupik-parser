@@ -80,7 +80,7 @@ struct Peghqiilta: ParsableCommand {
                             let weight = 1 / analyses.analyses.count
                             for analysis in analyses.analyses {
                                 //analysis.weight = weight
-                                print("\(analysis.underlyingForm) \(analysis.weight)")
+                                print("\(analysis.underlyingForm)")//" \(analysis.weight)")
                             }
                         }
                         //print(analyzedWord)
