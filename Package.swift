@@ -21,7 +21,7 @@ let package = Package(
         Package.Dependency.package(
             name: "Foma",
             url: "https://github.com/dowobeha/Foma.git",
-            from: "0.3.5"),
+            from: "0.4.1"),
         Package.Dependency.package(
             name: "swift-argument-parser",
             url: "https://github.com/apple/swift-argument-parser.git",
@@ -40,6 +40,7 @@ let package = Package(
             from: "0.1.6"
         ),
         Package.Dependency.package( // Needed for Swift package manager to see zlib
+            name: "swift-nio-zlib-support",
             url: "https://github.com/apple/swift-nio-zlib-support.git",
             from: "1.0.0"
         )
