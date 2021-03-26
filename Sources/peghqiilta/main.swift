@@ -60,36 +60,87 @@ struct Peghqiilta: ParsableCommand {
     /// Run learning iterations
     func run() {
         
-        do {
-            var jsonString = ""
-            if let lines = StreamReader(path: self.input) {
-                for line in lines {
-                    jsonString += line
-                }
-            }
-            
-            if let json = jsonString.data(using: .utf8) {
-                let decoder = JSONDecoder()
-                let parsedSentences: Qamani = try decoder.decode(Qamani.self, from: json)
-                
-                for analyzedSentence in parsedSentences {
-                    print(analyzedSentence)
-                    
-                    for analyzedWord in analyzedSentence {
-                        if let analyses = analyzedWord.analyses {
-                            let weight = 1 / analyses.analyses.count
-                            for analysis in analyses.analyses {
-                                //analysis.weight = weight
-                                print("\(analysis.underlyingForm)")//" \(analysis.weight)")
-                            }
-                        }
-                        //print(analyzedWord)
-                    }
-                }
-            }
-        } catch {
-            print("Problem")
+        if let analyzedData = Qamani.fromJSON(path: input) {
+            print(analyzedData)
+        } else {
+            print("Failed to read analyzed data from \(input)")
         }
+        
+//        do {
+//            var jsonString = """
+//{
+//  "analyzedSentences" : [
+//    {
+//      "document" : "Ch3.gold.sentences",
+//      "tokens" : [
+//        "Aqiigukung",
+//        "."
+//      ],
+//      "lineNumber" : 3,
+//      "words" : [
+//        {
+//          "document" : "Ch3.gold.sentences",
+//          "wordNumber" : 1,
+//          "sentenceNumber" : 3,
+//          "count" : 0,
+//          "originalSurfaceForm" : "Aqiigukung"
+//        },
+//        {
+//          "document" : "Ch3.gold.sentences",
+//          "wordNumber" : 2,
+//          "analyses" : {
+//            "analyses" : [
+//              {
+//                "intermediateForm" : ".",
+//                "underlyingForm" : ".(PUNCT)",
+//                "morphemes" : ".(PUNCT)"
+//              }
+//            ],
+//            "parsedSurfaceForm" : ".",
+//            "parsedBy" : "l2s",
+//            "originalSurfaceForm" : "."
+//          },
+//          "sentenceNumber" : 3,
+//          "count" : 1,
+//          "originalSurfaceForm" : "."
+//        }
+//      ]
+//    }
+//  ],
+//  "morphemeDelimiter" : "^"
+//}
+//"""
+//
+//            if let lines = StreamReader(path: self.input) {
+//                for line in lines {
+//                    jsonString += line
+//                }
+//            }
+            
+//            print(jsonString)
+//
+//            if let json = jsonString.data(using: .utf8) {
+//                let decoder = JSONDecoder()
+//                let parsedSentences: Qamani = try decoder.decode(Qamani.self, from: json)
+////
+////                for analyzedSentence in parsedSentences {
+////                    print(analyzedSentence)
+////
+//////                    for analyzedWord in analyzedSentence {
+//////                        if let analyses = analyzedWord.analyses {
+//////                            let weight = 1 / analyses.analyses.count
+//////                            for analysis in analyses.analyses {
+//////                                //analysis.weight = weight
+//////                                print("\(analysis.underlyingForm)")//" \(analysis.weight)")
+//////                            }
+//////                        }
+//////                        //print(analyzedWord)
+//////                    }
+////                }
+//            }
+//        } catch {
+//            print("Problem")
+//        }
         
 //        let m = MorphologicalAnalysis("qikmigh^[Abs.Sg]", withIntermediateForm: "qikmiq^{0}", delimiter: "^")
 //

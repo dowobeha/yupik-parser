@@ -22,13 +22,19 @@ public struct Qamani: Sequence, Codable {
     public static func fromJSON(path: String) -> Qamani? {
         if let lineReader = StreamReader(path: path) {
             let lines = Array<String>(lineReader)
-            let jsonString = lines.joined(separator: "")
+            let jsonString = lines.joined(separator: "\n")
+            
             do {
-                let data = jsonString.data(using: .utf8)!
-                let decoder = JSONDecoder()
-                let qamani = try decoder.decode(Qamani.self, from: data)
-                return qamani
+                if let data = jsonString.data(using: .utf8) {
+                    let decoder = JSONDecoder()
+                    let qamani = try decoder.decode(Qamani.self, from: data)
+                    return qamani
+                } else {
+                    print("Unable to access data from jsonString", to: &stderr)
+                    return nil
+                }
             } catch {
+                print("ERROR:\tThe JSON data in \(path) does not conform to the expected data format.\n\n\(error)", to: &stderr)
                 return nil
             }
         } else {
