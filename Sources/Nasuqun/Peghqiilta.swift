@@ -5,12 +5,12 @@ import Threading
 
 public struct Peghqiilta {
       
-    let analyzedCorpus: Qamani
+    let analyzedCorpus: AnalyzedCorpus
     public let analyses: [MorphologicalAnalyses]
     let orderOfMorphLM: NgramOrder
     let wordLM: WordLM
     
-    public init(analyzedCorpus: Qamani, orderOfMorphLM: Int, wordLM: WordLM) {
+    public init(analyzedCorpus: AnalyzedCorpus, orderOfMorphLM: Int, wordLM: WordLM) {
         self.analyzedCorpus = analyzedCorpus
         self.analyses = self.analyzedCorpus.flatMap({$0.words}).compactMap({$0.analyses})
         self.orderOfMorphLM = orderOfMorphLM

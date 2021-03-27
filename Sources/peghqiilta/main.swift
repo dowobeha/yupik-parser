@@ -60,7 +60,7 @@ struct Peghqiilta: ParsableCommand {
     /// Run learning iterations
     func run() {
         
-        if let analyzedData = Qamani.fromJSON(path: input) {
+        if let analyzedData = AnalyzedCorpus.fromJSON(path: input) {
             print(analyzedData)
         } else {
             print("Failed to read analyzed data from \(input)")

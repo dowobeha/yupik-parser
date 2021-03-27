@@ -59,7 +59,7 @@ struct Itemquulteki: ParsableCommand {
             return
         }
         
-        guard let parsedSentences: Qamani = itemquulta.analyzeFile(self.sentences) else {
+        guard let parsedSentences: AnalyzedCorpus = itemquulta.analyzeFile(self.sentences) else {
             print("Unable to read \(self.sentences)", to: &stderr)
             return
         }

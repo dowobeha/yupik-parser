@@ -49,7 +49,7 @@ public struct Itemquulta {
      
      - Returns: A list of morphologically analyzed sentences.
      */
-    public func analyzeFile(_ filename: String) -> Qamani? {
+    public func analyzeFile(_ filename: String) -> AnalyzedCorpus? {
         
         if let lines = StreamReader(path: filename) {
             var document = filename
@@ -108,7 +108,7 @@ public struct Itemquulta {
 //            }
             
             //return nil
-            return Qamani(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}), morphemeDelimiter: self.delimiter)
+            return AnalyzedCorpus(analyzedSentences: Array(result).sorted(by: {$0.lineNumber < $1.lineNumber}), morphemeDelimiter: self.delimiter)
 
         } else {
             return nil
