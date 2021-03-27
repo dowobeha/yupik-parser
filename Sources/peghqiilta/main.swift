@@ -1,7 +1,7 @@
 import ArgumentParser
 import Foundation
 import Qamani
-import Nasuqun
+//import Nasuqun
 import StreamReader
 
 
@@ -60,8 +60,18 @@ struct Peghqiilta: ParsableCommand {
     /// Run learning iterations
     func run() {
         
-        if let analyzedData = AnalyzedCorpus.fromJSON(path: input) {
-            print(analyzedData)
+        if let analyzedCorpus = AnalyzedCorpus.fromJSON(path: input) {
+            for analyzedSentence in analyzedCorpus {
+                for analyzedWord in analyzedSentence {
+                    if let analyses = analyzedWord.analyses {
+                        let weight = 1.0 / Double(analyses.count)
+                        for analysis in analyses.analyses {
+                            print("\(weight)\t\(analysis)")
+                        }
+                    }
+                }
+            }
+            
         } else {
             print("Failed to read analyzed data from \(input)")
         }
