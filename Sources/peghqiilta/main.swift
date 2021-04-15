@@ -1,7 +1,7 @@
 import ArgumentParser
 import Foundation
 import Qamani
-//import Nasuqun
+import Nasuqun
 import StreamReader
 
 
@@ -64,9 +64,12 @@ struct Peghqiilta: ParsableCommand {
             for analyzedSentence in analyzedCorpus {
                 for analyzedWord in analyzedSentence {
                     if let analyses = analyzedWord.analyses {
-                        let weight = 1.0 / Double(analyses.count)
+//                        let weight = 1.0 / Double(analyses.count)
+//                        print(weight)
                         for analysis in analyses.analyses {
-                            print("\(weight)\t\(analysis)")
+                            print(analysis.interLinearGloss())
+                            //let _ = Model1(analysis)
+                            //print("\(weight)\t\(Model1(analysis))")
                         }
                     }
                 }
