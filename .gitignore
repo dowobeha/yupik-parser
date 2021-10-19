@@ -10,3 +10,6 @@ jacobson/
 *.fomabin
 *.txt
 results/
+*.json
+*.json.gz
+run.sh
