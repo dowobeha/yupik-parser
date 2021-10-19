@@ -74,7 +74,7 @@ let package = Package(
                 Target.Dependency.product(
                     name: "NgramLM",
                     package: "NgramLM")
-        ]),
+        ]), 
         Target.target(
             name: "peghqiilta",
             dependencies: [

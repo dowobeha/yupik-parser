@@ -6,12 +6,20 @@ public struct MorphologicalAnalysis: Codable {
     /// A single morphological analysis of a word, as represented by a morpheme-delimited string of underlying lexical morphemes.
     public let underlyingForm: String
     
-    public let morphemes: String //[String]
+    public let morphemes: [Morpheme] //[String]
     
     /// List matching intermediate form(s)
     public let intermediateForm: String?
     
     public let delimiter: String
+    
+    public let surfaceMorphemes: [String]
+    
+    public let underlyingMorphemes: [String]
+    
+    public let partsOfSpeech: [String]
+    
+    public let heuristicScore: Int
     
     //public lazy var morphemeList = self.calculateMorphemes()
     /**
@@ -19,14 +27,18 @@ public struct MorphologicalAnalysis: Codable {
      */
     public init(_ underlyingForm: String, withIntermediateForm intermediateForm: String?, delimiter: String) {
         self.underlyingForm = underlyingForm
-        self.morphemes = underlyingForm.replacingOccurrences(of: "=", with: " (Enclitic)").replacingOccurrences(of: delimiter, with: " ")
+        //self.morphemes = underlyingForm.replacingOccurrences(of: "=", with: " (Enclitic)").replacingOccurrences(of: delimiter, with: " ")
         self.intermediateForm = intermediateForm
         self.delimiter = delimiter
-    }
-
-    public func partsOfSpeech() -> [String] {
-        let morphemes: [String] = self.underlyingForm.replacingOccurrences(of: "=", with: " (Enclitic)").replacingOccurrences(of: delimiter, with: " ").components(separatedBy: " ")
-        return morphemes.enumerated().map{ (index: Int, morpheme: String) -> String in
+        //print(underlyingForm)
+        if let intermediate =  self.intermediateForm {
+            self.surfaceMorphemes = intermediate.components(separatedBy: self.delimiter)
+        } else {
+            self.surfaceMorphemes = []
+        }
+ //       self.surfaceMorphemes = self.intermediateForm!.components(separatedBy: self.delimiter)
+        self.underlyingMorphemes = underlyingForm.replacingOccurrences(of: "=", with: " (Enclitic)").replacingOccurrences(of: delimiter, with: " ").components(separatedBy: " ")
+        self.partsOfSpeech = self.underlyingMorphemes.enumerated().map{ (index: Int, morpheme: String) -> String in
             if morpheme.hasSuffix("(N)") {
                 return "N" //"Nbase"
             } else if morpheme.hasSuffix("(V)") {
@@ -61,38 +73,44 @@ public struct MorphologicalAnalysis: Codable {
             }
             return morpheme
         }
-    }
-    
-    public func underlyingMorphemes() -> [String] {
-        return self.morphemes.components(separatedBy: " ") //.split(separator: " ").map { String($0) }
-    }
-    
-    public func surfaceMorphemes() -> [String] {
-        return self.intermediateForm!.components(separatedBy: self.delimiter)
-    }
-    
-    public func calculateMorphemes() -> [Morpheme] {
-        let underlyingMorphemes = self.underlyingMorphemes()
-        let surfaceForms = self.surfaceMorphemes() //analysis.intermediateForm!.components(separatedBy: analysis.delimiter) //.split(separator: analysis.delimiter)
-        let partsOfSpeech = self.partsOfSpeech()
-
+        
+        // Calculate list of morpheme objects
         var morphemes = [Morpheme]()
         for i in 0..<underlyingMorphemes.count {
-            morphemes.append(Morpheme(underlying: underlyingMorphemes[i], type: partsOfSpeech[i], surface: surfaceForms[i]))
+            let surfaceMorpheme = self.surfaceMorphemes.count > i ? self.surfaceMorphemes[i] : ""
+            let partOfSpeech = self.partsOfSpeech.count > i ? self.partsOfSpeech[i] : ""
+            morphemes.append(Morpheme(underlying: self.underlyingMorphemes[i], type: partOfSpeech, surface: surfaceMorpheme))
         }
+        self.morphemes = morphemes
+       
+        var score = 0
         
-        return morphemes
+        // Add a penalty if the analysis contains any morphemes that occur more than once in the analysis.
+        // In principle, this could happen, but in practice it almost always is a sign of a bad analysis.
+        score += 10000 * (self.underlyingMorphemes.count - Set(self.underlyingMorphemes).count)
+
+        // Add a penalty if the number of morphemes in the underlying form differs from the number in the surface form.
+        // This really shouldn't happen, but if it does, the analysis should be penalized.
+        score += 1000  * abs(self.underlyingMorphemes.count - self.surfaceMorphemes.count)
+
+        score += self.underlyingMorphemes.count
+        
+        //score += self.surfaceMorphemes.count
+        
+        self.heuristicScore = score
+        
     }
+
     
     public func interLinearGloss() -> String {
-        let morphemes = self.calculateMorphemes()
+        //let morphemes = self.calculateMorphemes()
         
-        let lengths = morphemes.map{ (morpheme: Morpheme) -> Int in 1+max(max(morpheme.surfaceForm.count, morpheme.type.count), morpheme.underlyingForm.count)}
+        let lengths = self.morphemes.map{ (morpheme: Morpheme) -> Int in 1+max(max(morpheme.surfaceForm.count, morpheme.type.count), morpheme.underlyingForm.count)}
         
         var s = ""
-        for i in 0..<morphemes.count {
+        for i in 0..<self.morphemes.count {
             if i > 0 { s += "\t" }
-            s += morphemes[i].type.padding(toLength: lengths[i], withPad: " ", startingAt: 0)
+            s += self.morphemes[i].type.padding(toLength: lengths[i], withPad: " ", startingAt: 0)
         }
         s += "\n"
         

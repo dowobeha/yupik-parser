@@ -65,7 +65,8 @@ public struct MorphologicalAnalyzer {
             //print("MorphologicalAnalyzer.analyzeWord 5:\t\"\(surfaceForm)\"\t\"\(parsedSurfaceForm)\"\t\"\(analyses.count)\"\t\"\(analyses.first!)\"", to: &stderr)
             //print("\(self.name) is done analyzing \"\(surfaceForm)\"")
             //self.semaphore.signal()
-            return MorphologicalAnalyses(analyses, of: parsedSurfaceForm, originally: surfaceForm, parsedBy: self.name)
+            
+            return MorphologicalAnalyses(analyses.sorted(by: { $0.heuristicScore < $1.heuristicScore }), of: parsedSurfaceForm, originally: surfaceForm, parsedBy: self.name)
 
         } else {
 
